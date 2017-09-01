@@ -1,5 +1,11 @@
 %{
 #include "parser.tab.h"
+#include "file.h"
+	void yyerror (char const *s) 
+	{
+		fprintf(stderr, "Error | Statement number: %d\n%s\n",yylineno,s);
+		flag=1;
+	}
 %}
 
 %%
@@ -56,7 +62,11 @@
 "{"		return '{';
 "}"		return '}';
 "," 		return ',';
-";" 		return ';';
+
+";" 		{
+		yylineno++;
+		return ';';
+		}
 "=" 		return '=';
 
 [ \t]		{ /* Do nothing */ }
@@ -64,3 +74,7 @@
 		  printf("Unexpected token encountered: %s\n", yytext); 
 		  return ETOK;
 		}
+%%
+
+  
+	   

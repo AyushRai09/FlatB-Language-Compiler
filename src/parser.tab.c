@@ -69,8 +69,9 @@
   FILE *yyin;
   int yylex (void);
   void yyerror (char const *s);
+  int flag=0;
 
-#line 74 "parser.tab.c" /* yacc.c:339  */
+#line 75 "parser.tab.c" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -150,7 +151,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 154 "parser.tab.c" /* yacc.c:358  */
+#line 155 "parser.tab.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -450,12 +451,12 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    41,    41,    43,    43,    45,    46,    47,    48,    51,
-      52,    53,    54,    55,    56,    57,    58,    59,    60,    63,
-      64,    65,    66,    67,    68,    69,    70,    73,    74,    75,
-      76,    77,    78,    79,    81,    82,    84,    85,    86,    87,
-      89,    90,    91,    92,    94,    94,    95,    96,    97,    98,
-      99,   100,   101,   102,   104,   105,   106,   108,   108
+       0,    42,    42,    44,    44,    46,    47,    48,    49,    52,
+      53,    54,    55,    56,    57,    58,    59,    60,    61,    64,
+      65,    66,    67,    68,    69,    70,    71,    74,    75,    76,
+      77,    78,    79,    80,    82,    83,    85,    86,    87,    88,
+      90,    91,    92,    93,    95,    95,    96,    97,    98,    99,
+     100,   101,   102,   103,   105,   106,   107,   109,   109
 };
 #endif
 
@@ -1304,7 +1305,7 @@ yyreduce:
   switch (yyn)
     {
       
-#line 1308 "parser.tab.c" /* yacc.c:1646  */
+#line 1309 "parser.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1532,13 +1533,9 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 110 "parser.y" /* yacc.c:1906  */
+#line 111 "parser.y" /* yacc.c:1906  */
 
 
-void yyerror (char const *s)
-{
-       fprintf (stderr, "%s\n", s);
-}
 
 int main(int argc, char *argv[])
 {
@@ -1555,4 +1552,6 @@ int main(int argc, char *argv[])
 	yyin = fopen(argv[1], "r");
 
 	yyparse();
+	if(!flag)
+		printf("Successfully parsed without any errors\n");
 }

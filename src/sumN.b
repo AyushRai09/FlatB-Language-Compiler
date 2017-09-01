@@ -14,12 +14,11 @@ codeblock{
 		}
 	}
 	
-
 	sum = 0;
 	for i = 1, 100 {
 		sum = sum + data[i];
  	}
 
-	print "Sum value: ", sum;
+	print "Sum value: ", "aush", sdfdsf, sum;
 }
 

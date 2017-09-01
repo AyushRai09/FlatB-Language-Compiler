@@ -4,6 +4,7 @@
   FILE *yyin;
   int yylex (void);
   void yyerror (char const *s);
+  int flag=0;
 %}
 
 %token declaration_list
@@ -109,10 +110,6 @@ call: IF cond |
 
 %%
 
-void yyerror (char const *s)
-{
-       fprintf (stderr, "%s\n", s);
-}
 
 int main(int argc, char *argv[])
 {
@@ -129,4 +126,6 @@ int main(int argc, char *argv[])
 	yyin = fopen(argv[1], "r");
 
 	yyparse();
+	if(!flag)
+		printf("Successfully parsed without any errors\n");
 }
