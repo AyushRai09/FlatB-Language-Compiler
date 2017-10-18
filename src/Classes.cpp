@@ -119,10 +119,11 @@ for(int i = 0; i < tabs_needed; i++){
 
 Var::Var(string declType, string name){
 this->declType = declType;
-string strtemp;
+string strtemp="";
+cout << declType << "\n";
 if(declType=="Array")
 {
-  for(int i=0;declType[i]!='[';i++)
+  for(int i=0;name[i]!='[';i++)
     strtemp+=name[i];
   name=strtemp;
 }
@@ -137,10 +138,33 @@ this->var_list = vars->getVarsList();
 // }
 }
 Prog::Prog(class fieldDecls* fields, class fieldCodes* codes){
-    this->decls=fields;
+  this->decls=fields;
   this->codes=codes;
 }
 
+arithmeticst::arithmeticst(class exprnewst* lho, string op, class exprnewst* rho){
+  this->lho=lho;
+  this->op=op;
+  this->rho=rho;
+}
+
+exprnewst::exprnewst(class exprnewst* arthm){
+  this->arthm=arthm;
+}
+exprnewst::exprnewst(string str){
+  string temp="";
+  for(int i=0;str[i]!='[' && str[i]!=0;i++)
+    temp+=str[i];
+  str=temp;
+  this->str=str;
+}
+exprnewst::exprnewst(int num){
+this->num=num;
+}
+
+string Var::getName(){
+  return name;
+}
 
 vector< class Var*> Vars::getVarsList(){
   return vars_list;

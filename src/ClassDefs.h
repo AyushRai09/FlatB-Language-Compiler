@@ -83,7 +83,8 @@ class astNode{
 
 
 class Var:public astNode{
-private:
+// private:
+public:
 	string declType; /* Array or Normal */
 	string name; /* Name of the variable */
 	string dataType; /* type of variable */
@@ -161,3 +162,26 @@ public:
 	void traverse();
 	void generateCode();
 };
+
+
+class arithmeticst:public fieldCode{
+private:
+	string op;
+	class exprnewst* lho;
+	class exprnewst* rho;
+public:
+	arithmeticst(class exprnewst*,string, class exprnewst*);
+	void traverse();
+}
+
+class exprnewst:public fieldCode{
+private:
+	class arithmeticst* arthm;
+	string str;
+	int num;
+public:
+	exprnewst(class arithmeticst*);
+	exprnew(string);
+	exprnew(int);
+	void traverse();
+}

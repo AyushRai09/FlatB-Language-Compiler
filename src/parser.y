@@ -61,20 +61,21 @@ program: DECLBLOCK '{' decl_blocks '}' CODEBLOCK '{' code_blocks '}' {
 
 decl_blocks: { $$ = new fieldDecls(); }
            | decl_blocks decl_block ';' { $$->push_back($2); };
+
 decl_block:  | decl_block INT variables {$$=new fieldDecl($3);};
 
 variables: variable { $$=new Vars();$$->push_back($1);}
            | variables ',' variable {$$->push_back($3);};
 
-variable:  IDENTIFIER {$$=new Var(string("Identifier"),$1); cout << $$<<"\n";}
-           | ARRAY  {$$=new Var(string("Array"),$1);  cout << $$<<"\n";};
+variable:  IDENTIFIER {$$ = new Var(string("Identifier"), string($1));}
+           | ARRAY  {$$=new Var(string("Array"),string($1));};
 
 code_blocks: { $$=new fieldCodes(); }
             | code_blocks code_block ';' {$$->push_back($2);};
 
 code_block:print
 		| read
-		| expr
+		| expr {$$=new exprst($1);}
 		| IF cond '{' code_block '}'
 		| IF cond '{' code_block '}' ELSE '{' code_block '}'
 		| WHILE cond '{' code_block '}'
@@ -101,18 +102,18 @@ thingsr: IDENTIFIER
 		| NUMBER ',' thingsr
 		| ARRAY ',' thingsr
 
-expr: IDENTIFIER '=' exprnew
-		| ARRAY '=' exprnew
+expr: IDENTIFIER '=' exprnew {$$=new expr(string("Identifier"),$1,$3);}
+		| ARRAY '=' exprnew {$$=new exprnewst(string("Array"),$1,$3);}
 
-exprnew: arithmetic
-		| IDENTIFIER
-		| NUMBER
-		| ARRAY
+exprnew: arithmetic  {$$=new exprnewst($1); }
+		| IDENTIFIER {$$=new exprnewst($1);}
+		| NUMBER    {$$=new exprnewst($1);}
+		| ARRAY     {$$=new exprnewst($1);}  
 
-arithmetic: exprnew '+' exprnew
-		| exprnew '-' exprnew
-		| exprnew '/' exprnew
-		| exprnew '*' exprnew
+arithmetic: exprnew '+' exprnew {$$=new arithmeticst($1,string($2),$3);}
+		| exprnew '-' exprnew   {$$=new arithmeticst($1,string($2),$3);}
+		| exprnew '/' exprnew   {$$=new arithmeticst($1,string($2),$3);}
+		| exprnew '*' exprnew    {$$=new arithmeticst($1,string($2),$3);}
 
 cond: exprnew compare exprnew andor cond |
 compare: GT

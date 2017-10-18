@@ -452,13 +452,13 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    57,    57,    62,    63,    64,    64,    66,    67,    69,
-      70,    72,    73,    75,    76,    77,    78,    79,    80,    81,
-      82,    83,    86,    87,    88,    89,    90,    91,    92,    93,
-      96,    97,    98,    99,   100,   101,   102,   104,   105,   107,
-     108,   109,   110,   112,   113,   114,   115,   117,   117,   118,
-     119,   120,   121,   122,   123,   124,   125,   127,   128,   129,
-     131,   131
+       0,    57,    57,    62,    63,    65,    65,    67,    68,    70,
+      71,    73,    74,    76,    77,    78,    79,    80,    81,    82,
+      83,    84,    87,    88,    89,    90,    91,    92,    93,    94,
+      97,    98,    99,   100,   101,   102,   103,   105,   106,   108,
+     109,   110,   111,   113,   114,   115,   116,   118,   118,   119,
+     120,   121,   122,   123,   124,   125,   126,   128,   129,   130,
+     132,   132
 };
 #endif
 
@@ -1326,43 +1326,43 @@ yyreduce:
     break;
 
   case 6:
-#line 64 "parser.y" /* yacc.c:1646  */
+#line 65 "parser.y" /* yacc.c:1646  */
     {(yyval.field)=new fieldDecl((yyvsp[0].vars));}
 #line 1332 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 7:
-#line 66 "parser.y" /* yacc.c:1646  */
+#line 67 "parser.y" /* yacc.c:1646  */
     { (yyval.vars)=new Vars();(yyval.vars)->push_back((yyvsp[0].var));}
 #line 1338 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 8:
-#line 67 "parser.y" /* yacc.c:1646  */
+#line 68 "parser.y" /* yacc.c:1646  */
     {(yyval.vars)->push_back((yyvsp[0].var));}
 #line 1344 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 9:
-#line 69 "parser.y" /* yacc.c:1646  */
-    {(yyval.var)=new Var(string("Identifier"),(yyvsp[0].value)); cout << (yyval.var)<<"\n";}
+#line 70 "parser.y" /* yacc.c:1646  */
+    {(yyval.var) = new Var(string("Identifier"),string((yyvsp[0].value)));}
 #line 1350 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 10:
-#line 70 "parser.y" /* yacc.c:1646  */
-    {(yyval.var)=new Var(string("Array"),(yyvsp[0].value));  cout << (yyval.var)<<"\n";}
+#line 71 "parser.y" /* yacc.c:1646  */
+    {(yyval.var)=new Var(string("Array"),string((yyvsp[0].value)));}
 #line 1356 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 11:
-#line 72 "parser.y" /* yacc.c:1646  */
+#line 73 "parser.y" /* yacc.c:1646  */
     { (yyval.codes)=new fieldCodes(); }
 #line 1362 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 12:
-#line 73 "parser.y" /* yacc.c:1646  */
+#line 74 "parser.y" /* yacc.c:1646  */
     {(yyval.codes)->push_back((yyvsp[-1].code));}
 #line 1368 "parser.tab.c" /* yacc.c:1646  */
     break;
@@ -1596,7 +1596,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 133 "parser.y" /* yacc.c:1906  */
+#line 134 "parser.y" /* yacc.c:1906  */
 
 
 
