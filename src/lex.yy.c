@@ -561,14 +561,19 @@ int yy_flex_debug = 0;
 char *yytext;
 #line 1 "scanner.l"
 #line 2 "scanner.l"
+#include <bits/stdc++.h>
+#include "ClassDefs.h"
 #include "parser.tab.h"
 #include "file.h"
-	void yyerror (char const *s) 
+#define YY_DECL extern "C" int yylex()
+extern union Node yylval;
+using namespace std;
+	void yyerror (char const *s)
 	{
 		fprintf(stderr, "Error | Statement number: %d\n%s\n",yylineno,s);
 		flag=1;
 	}
-#line 572 "lex.yy.c"
+#line 577 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -786,9 +791,9 @@ YY_DECL
 		}
 
 	{
-#line 11 "scanner.l"
+#line 16 "scanner.l"
 
-#line 792 "lex.yy.c"
+#line 797 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -847,103 +852,105 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 12 "scanner.l"
+#line 17 "scanner.l"
 return CODEBLOCK;
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 13 "scanner.l"
+#line 18 "scanner.l"
 return DECLBLOCK;
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 14 "scanner.l"
+#line 19 "scanner.l"
 return declaration_list;
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 15 "scanner.l"
+#line 20 "scanner.l"
 return FOR;
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 16 "scanner.l"
+#line 21 "scanner.l"
 return WHILE;
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 17 "scanner.l"
+#line 22 "scanner.l"
 return AND;
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 18 "scanner.l"
+#line 23 "scanner.l"
 return OR;
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 19 "scanner.l"
+#line 24 "scanner.l"
 {
-			printf("Token type: datatype->int, Lexeme/Token Value: %s\n", yytext);  
+			yylval.value = strdup(yytext);
+			printf("Token type: datatype->int, Lexeme/Token Value: %s\n", yytext);
 			return INT;
 		}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 23 "scanner.l"
+#line 29 "scanner.l"
 {
-				printf("Label detected with the name: %s\n", yytext);  
+				printf("Label detected with the name: %s\n", yytext);
 				return LABEL;
  			}
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 28 "scanner.l"
+#line 34 "scanner.l"
 return IF;
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 29 "scanner.l"
+#line 35 "scanner.l"
 return ELSE;
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 30 "scanner.l"
+#line 36 "scanner.l"
 return PRINT;
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 31 "scanner.l"
+#line 37 "scanner.l"
 return READ;
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 32 "scanner.l"
-{  
-			printf("Token type: Number, Lexeme/Token Value: %s\n", yytext);  
-			return NUMBER; 
+#line 38 "scanner.l"
+{
+			printf("Token type: Number, Lexeme/Token Value: %s\n", yytext);
+			return NUMBER;
                 }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 36 "scanner.l"
-{ 
+#line 42 "scanner.l"
+{
 			printf("goto detected\n");
 			return GOTO;
 		}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 40 "scanner.l"
+#line 46 "scanner.l"
 {
-			printf("Token type:integer array, Lexeme/Token Value: %s\n", yytext);  
+ 			yylval.value = strdup(yytext);
+			printf("Token type:integer array, Lexeme/Token Value: %s\n", yytext);
 			return ARRAY;
  			}
 	YY_BREAK
 case 17:
 /* rule 17 can match eol */
 YY_RULE_SETUP
-#line 44 "scanner.l"
+#line 51 "scanner.l"
 {
 				printf("Token type:string, Lexeme/Token Value: %s\n",yytext);
 				return STRING;
@@ -951,70 +958,70 @@ YY_RULE_SETUP
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 49 "scanner.l"
-{  
-			printf("Token type: Identifier, Lexeme/Token Value: %s\n", yytext);  
-			return IDENTIFIER; 
+#line 56 "scanner.l"
+{
+			printf("Token type: Identifier, Lexeme/Token Value: %s\n", yytext);
+			return IDENTIFIER;
 		     }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 54 "scanner.l"
+#line 61 "scanner.l"
 return GTE;
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 55 "scanner.l"
+#line 62 "scanner.l"
 return LTE;
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 56 "scanner.l"
+#line 63 "scanner.l"
 return EE;
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 57 "scanner.l"
+#line 64 "scanner.l"
 return GT;
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 58 "scanner.l"
+#line 65 "scanner.l"
 return LT;
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 59 "scanner.l"
+#line 66 "scanner.l"
 return '+';
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 60 "scanner.l"
+#line 67 "scanner.l"
 return '-';
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 61 "scanner.l"
+#line 68 "scanner.l"
 return '*';
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 62 "scanner.l"
+#line 69 "scanner.l"
 return '{';
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 63 "scanner.l"
+#line 70 "scanner.l"
 return '}';
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 64 "scanner.l"
+#line 71 "scanner.l"
 return ',';
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 66 "scanner.l"
+#line 73 "scanner.l"
 {
 		yylineno++;
 		return ';';
@@ -1022,28 +1029,28 @@ YY_RULE_SETUP
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 70 "scanner.l"
+#line 77 "scanner.l"
 return '=';
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 72 "scanner.l"
+#line 79 "scanner.l"
 { /* Do nothing */ }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 73 "scanner.l"
-{ 
-		  printf("Unexpected token encountered: %s\n", yytext); 
+#line 80 "scanner.l"
+{
+		  printf("Unexpected token encountered: %s\n", yytext);
 		  return ETOK;
 		}
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 77 "scanner.l"
+#line 84 "scanner.l"
 ECHO;
 	YY_BREAK
-#line 1047 "lex.yy.c"
+#line 1054 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2044,10 +2051,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 77 "scanner.l"
+#line 84 "scanner.l"
 
 
-
-  
-	   
 

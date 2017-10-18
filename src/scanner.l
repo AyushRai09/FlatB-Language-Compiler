@@ -1,7 +1,12 @@
 %{
+#include <bits/stdc++.h>
+#include "ClassDefs.h"
 #include "parser.tab.h"
 #include "file.h"
-	void yyerror (char const *s) 
+#define YY_DECL extern "C" int yylex()
+extern union Node yylval;
+using namespace std;
+	void yyerror (char const *s)
 	{
 		fprintf(stderr, "Error | Statement number: %d\n%s\n",yylineno,s);
 		flag=1;
@@ -17,28 +22,30 @@
 "and" 				return AND;
 "or" 				return OR;
 "int"           {
-			printf("Token type: datatype->int, Lexeme/Token Value: %s\n", yytext);  
+			yylval.value = strdup(yytext);
+			printf("Token type: datatype->int, Lexeme/Token Value: %s\n", yytext);
 			return INT;
 		}
  [a-zA-Z][a-zA-Z0-9]":"    {
-				printf("Label detected with the name: %s\n", yytext);  
+				printf("Label detected with the name: %s\n", yytext);
 				return LABEL;
  			}
-	 			
+
 "if" 		return IF;
 "else" 		return ELSE;
 "print" 	return PRINT;
 "read" 			return READ;
-[0-9][0-9]*	{  
-			printf("Token type: Number, Lexeme/Token Value: %s\n", yytext);  
-			return NUMBER; 
+[0-9][0-9]*	{
+			printf("Token type: Number, Lexeme/Token Value: %s\n", yytext);
+			return NUMBER;
                 }
-"goto" 		{ 
+"goto" 		{
 			printf("goto detected\n");
 			return GOTO;
 		}
  [a-zA-Z][a-zA-Z0-9]*"["[0-9a-z][0-9a-z]*"]" {
-			printf("Token type:integer array, Lexeme/Token Value: %s\n", yytext);  
+ 			yylval.value = strdup(yytext);
+			printf("Token type:integer array, Lexeme/Token Value: %s\n", yytext);
 			return ARRAY;
  			}
  \"(\\.|[^\\"])*\"      {
@@ -46,9 +53,9 @@
 				return STRING;
 			}
 
-[a-zA-Z][a-zA-Z0-9]* {  
-			printf("Token type: Identifier, Lexeme/Token Value: %s\n", yytext);  
-			return IDENTIFIER; 
+[a-zA-Z][a-zA-Z0-9]* {
+			printf("Token type: Identifier, Lexeme/Token Value: %s\n", yytext);
+			return IDENTIFIER;
 		     }
 
 ">=" 		return GTE;
@@ -70,11 +77,8 @@
 "=" 		return '=';
 
 [ \t]		{ /* Do nothing */ }
-.		{ 
-		  printf("Unexpected token encountered: %s\n", yytext); 
+.		{
+		  printf("Unexpected token encountered: %s\n", yytext);
 		  return ETOK;
 		}
 %%
-
-  
-	   

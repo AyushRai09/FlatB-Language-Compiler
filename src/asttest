@@ -1,0 +1,7 @@
+declblock{
+	int x,z,e;
+	int y;
+}
+codeblock{
+
+}
