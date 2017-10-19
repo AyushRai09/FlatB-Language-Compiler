@@ -14,32 +14,35 @@ using namespace std;
 %}
 
 %%
-"codeblock" 			return CODEBLOCK;
-"declblock"                 	return DECLBLOCK;
+"codeblock" 			{yylval.value = strdup(yytext);return CODEBLOCK;}
+"declblock"                 	{yylval.value = strdup(yytext);return DECLBLOCK;}
 "declaration_list"		return declaration_list;
-"for" 				return FOR;
-"while" 			return WHILE;
-"and" 				return AND;
-"or" 				return OR;
+"for" 				{yylval.value = strdup(yytext);return FOR;}
+"while" 			{yylval.value = strdup(yytext);return WHILE;}
+"and" 				{yylval.value = strdup(yytext);return AND;}
+"or" 					{yylval.value = strdup(yytext);return OR;}
 "int"           {
-			yylval.value = strdup(yytext);
-			printf("Token type: datatype->int, Lexeme/Token Value: %s\n", yytext);
-			return INT;
-		}
+							yylval.value = strdup(yytext);
+							printf("Token type: datatype->int, Lexeme/Token Value: %s\n", yytext);
+							return INT;
+								}
  [a-zA-Z][a-zA-Z0-9]":"    {
-				printf("Label detected with the name: %s\n", yytext);
-				return LABEL;
- 			}
+ 					yylval.value = strdup(yytext);
+					printf("Label detected with the name: %s\n", yytext);
+					return LABEL;
+ 													}
 
-"if" 		return IF;
-"else" 		return ELSE;
-"print" 	return PRINT;
-"read" 			return READ;
+"if" 		{yylval.value = strdup(yytext);return IF;}
+"else" 	{yylval.value = strdup(yytext);return ELSE;}
+"print" {yylval.value = strdup(yytext);return PRINT;}
+"read" 	{yylval.value = strdup(yytext);return READ;}
 [0-9][0-9]*	{
-			printf("Token type: Number, Lexeme/Token Value: %s\n", yytext);
-			return NUMBER;
-                }
+				yylval.number = stoi(yytext)	;
+				printf("Token type: Number, Lexeme/Token Value: %s\n", yytext);
+				return NUMBER;
+            }
 "goto" 		{
+				yylval.value = strdup(yytext);
 			printf("goto detected\n");
 			return GOTO;
 		}
@@ -49,23 +52,26 @@ using namespace std;
 			return ARRAY;
  			}
  \"(\\.|[^\\"])*\"      {
+ 				yylval.value = strdup(yytext);
 				printf("Token type:string, Lexeme/Token Value: %s\n",yytext);
 				return STRING;
 			}
 
 [a-zA-Z][a-zA-Z0-9]* {
+			yylval.value = strdup(yytext);
 			printf("Token type: Identifier, Lexeme/Token Value: %s\n", yytext);
 			return IDENTIFIER;
 		     }
 
-">=" 		return GTE;
-"<=" 		return LTE;
-"==" 		return EE;
-">" 		return GT;
-"<" 		return LT;
-"+"		return '+';
-"-"		return '-';
-"*"		return '*';
+">=" 		{yylval.value = strdup(yytext);return GTE;}
+"<=" 		{yylval.value = strdup(yytext);return LTE;}
+"==" 		{yylval.value = strdup(yytext);return EE;}
+">" 		{yylval.value = strdup(yytext);return GT;}
+"<" 		{yylval.value = strdup(yytext);return LT;}
+"+"		{yylval.value = strdup(yytext);return ADD;}
+"-"		{yylval.value = strdup(yytext);return SUB;}
+"*"		{yylval.value = strdup(yytext);return MUL;}
+"/"   {yylval.value = strdup(yytext);return DIV;}
 "{"		return '{';
 "}"		return '}';
 "," 		return ',';

@@ -1,6 +1,7 @@
 declblock{
 	int x;
+	int brr[222];
 }
 codeblock{
-
+			arr[2]=y+2;
 }

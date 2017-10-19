@@ -15,35 +15,39 @@ int errors=0;
 
 %start program
 %token declaration_list
+%token <value> ADD
+%token <value> SUB
+%token <value> MUL
+%token <value> DIV
 %token DECLBLOCK
 %token statement_list
-%token NUMBER
+%token <number> NUMBER
 %token <value> IDENTIFIER
 %token ETOK
-%left '+'
-%left '*'
-%left '/'
-%left '-'
-%token INT
+%token <value> INT
 %token <value> ARRAY
 %token PRINT
 %token STRING
 %token CODEBLOCK
-%token READ
-%token IF
-%token ELSE
-%token COMPARE
-%token EE
-%token GT
-%token LT
-%token GTE
-%token LTE
-%token AND
-%token OR
-%token WHILE
-%token FOR
+%token <value> READ
+%token <value>IF
+%token <value>ELSE
+%token <value>COMPARE
+%token <value> EE
+%token <value>GT
+%token <value>LT
+%token <value>GTE
+%token <value>LTE
+%token <value>AND
+%token <value>OR
+%token <value>WHILE
+%token <value>FOR
 %token LABEL
 %token GOTO
+%left '+'
+%left '*'
+%left '/'
+%left '-'
 
 %type <prog> program
 %type <fields> decl_blocks
@@ -52,6 +56,11 @@ int errors=0;
 %type <var> variable
 %type <codes> code_blocks
 %type <code> code_block
+%type <exprnewsts> exprnew
+%type <arthm> arithmetic
+%type <exp> expr
+%type <value> compare
+%type <value> andor
 %%
 
 program: DECLBLOCK '{' decl_blocks '}' CODEBLOCK '{' code_blocks '}' {
@@ -67,18 +76,18 @@ decl_block:  | decl_block INT variables {$$=new fieldDecl($3);};
 variables: variable { $$=new Vars();$$->push_back($1);}
            | variables ',' variable {$$->push_back($3);};
 
-variable:  IDENTIFIER {$$ = new Var(string("Identifier"), string($1));}
-           | ARRAY  {$$=new Var(string("Array"),string($1));};
+variable:  IDENTIFIER {$$ = new Var(string("Identifier"),string($1));cout<<$$->name<<"\n";}
+           | ARRAY  {$$=new Var(string("Array"),string($1));cout<<$$->name<<"\n";};
 
 code_blocks: { $$=new fieldCodes(); }
             | code_blocks code_block ';' {$$->push_back($2);};
 
 code_block:print
 		| read
-		| expr {$$=new exprst($1);}
-		| IF cond '{' code_block '}'
-		| IF cond '{' code_block '}' ELSE '{' code_block '}'
-		| WHILE cond '{' code_block '}'
+		| expr {$$=$1;}
+		| IF conds '{' code_block '}'  {$$=new ifelsest($2,$4,NULL);}
+		| IF conds '{' code_block '}' ELSE '{' code_block '}'  {$$=new ifelsest($2,$4,$8);}
+		| WHILE conds '{' code_block '}'
 		| FOR forloop '{' code_block '}'
 		| LABEL
 		| GOTO IDENTIFIER call
@@ -102,28 +111,30 @@ thingsr: IDENTIFIER
 		| NUMBER ',' thingsr
 		| ARRAY ',' thingsr
 
-expr: IDENTIFIER '=' exprnew {$$=new expr(string("Identifier"),$1,$3);}
-		| ARRAY '=' exprnew {$$=new exprnewst(string("Array"),$1,$3);}
+expr: IDENTIFIER '=' exprnew {$$=new expr($1,$3);}
+		| ARRAY '=' exprnew {$$=new expr($1,$3);} ;
 
 exprnew: arithmetic  {$$=new exprnewst($1); }
 		| IDENTIFIER {$$=new exprnewst($1);}
 		| NUMBER    {$$=new exprnewst($1);}
-		| ARRAY     {$$=new exprnewst($1);}  
+		| ARRAY     {$$=new exprnewst($1);};
 
-arithmetic: exprnew '+' exprnew {$$=new arithmeticst($1,string($2),$3);}
-		| exprnew '-' exprnew   {$$=new arithmeticst($1,string($2),$3);}
-		| exprnew '/' exprnew   {$$=new arithmeticst($1,string($2),$3);}
-		| exprnew '*' exprnew    {$$=new arithmeticst($1,string($2),$3);}
+arithmetic: exprnew ADD exprnew {$$=new arithmeticst($1,string($2),$3);}
+		| exprnew SUB exprnew   {$$=new arithmeticst($1,string($2),$3);}
+		| exprnew DIV exprnew   {$$=new arithmeticst($1,string($2),$3);}
+		| exprnew MUL exprnew    {$$=new arithmeticst($1,string($2),$3);};
 
-cond: exprnew compare exprnew andor cond |
-compare: GT
-	| LT
-	| GTE
-	| LTE
-	| EE
-andor: AND
-	| OR
-	|
+conds: {$$=new condsst();}  | conds cond {$$->push_back($2);};
+cond: exprnew compare exprnew andor {$$=new condst($1,$2,$3,$4);};
+compare: GT {$$=$1;}
+	| LT  {$$=$1;}
+	| GTE  {$$=$1;}
+	| LTE  {$$=$1;}
+	| EE  {$$=$1;};
+
+andor: {$$=string("Nothing");}
+    | AND {$$=$1;}
+	  | OR {$$=$1;};
 
 forloop: IDENTIFIER '=' NUMBER ','  NUMBER inc
 inc: ','  NUMBER

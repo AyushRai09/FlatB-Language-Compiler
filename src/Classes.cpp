@@ -118,16 +118,18 @@ for(int i = 0; i < tabs_needed; i++){
 
 
 Var::Var(string declType, string name){
-this->declType = declType;
+
 string strtemp="";
-cout << declType << "\n";
+cout << name << "\n";
+// cout << declType << "\n";
 if(declType=="Array")
 {
-  for(int i=0;name[i]!='[';i++)
+  for(int i=0;name[i]!='[' && name[i]!=0;i++)
     strtemp+=name[i];
   name=strtemp;
 }
 this->name = name;
+this->declType = declType;
 }
 
 
@@ -143,12 +145,16 @@ Prog::Prog(class fieldDecls* fields, class fieldCodes* codes){
 }
 
 arithmeticst::arithmeticst(class exprnewst* lho, string op, class exprnewst* rho){
+  // cout << op <<"\n";
   this->lho=lho;
   this->op=op;
   this->rho=rho;
 }
-
-exprnewst::exprnewst(class exprnewst* arthm){
+expr::expr(string str,class exprnewst* exprnew){
+  this->lhs=str;
+  this->rhs=exprnew;
+}
+exprnewst::exprnewst(class arithmeticst* arthm){
   this->arthm=arthm;
 }
 exprnewst::exprnewst(string str){
@@ -160,6 +166,12 @@ exprnewst::exprnewst(string str){
 }
 exprnewst::exprnewst(int num){
 this->num=num;
+}
+cond::cond(class exprnewst* lhi, string compopr, class exprnewst* string multcond){
+  this->lhi=lhi;
+  this->compopr=compopr;
+  this->rhi=rhi;
+  this->multcond=multcond;
 }
 
 string Var::getName(){
@@ -189,4 +201,10 @@ void fieldDecls::push_back(class fieldDecl*var){
 void fieldCodes::push_back(class fieldCode*var){
   fieldcodes.push_back(var);
   cnt++;
+}
+vector<class cond*> conds::getCondList(){
+  return condlist;
+}
+void conds::push_back(class cond* cond){
+  condlist.push_back(cond);
 }

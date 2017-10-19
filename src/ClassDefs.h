@@ -23,7 +23,7 @@ using namespace llvm;
 
 // enum exprType { binary = 1, location = 2, literal = 3, enclExpr = 4 , Unexpr = 5};
 // enum literalType { Int = 1, Bool = 2, Char = 3, String = 4 };
-// enum stmtType { Return = 1, NonReturn = 2};
+enum stmtType { Return = 1, NonReturn = 2};
 union Node{
 	int number;
 	char* value;
@@ -34,6 +34,10 @@ union Node{
 	class Var* var;
 	class fieldCodes* codes;
 	class fieldCode* code;
+	class exprnewst* exprnewsts;
+	class arithmeticst* arthm;
+	class expr* exp;
+
 	// class Block* block;
 	// class varDecls* var_decls;
 	// class varDecl* var_decl;
@@ -58,6 +62,8 @@ union Node{
 		field = NULL;
 		codes= NULL;
 		code = NULL;
+		exprnewsts=NULL;
+		arthm=NULL;
 		// var_decls = NULL;
 		// stmts = NULL;
 		// callout_args = NULL;
@@ -67,7 +73,7 @@ union Node{
 };
 
  typedef union Node YYSTYPE;
- #define YYSTYPE_IS_DECLARED 1
+ #define YYSTYPE_IS_DECLARED 1s
 
 class reportError{
 	/* Class for error handling */
@@ -87,19 +93,19 @@ class Var:public astNode{
 public:
 	string declType; /* Array or Normal */
 	string name; /* Name of the variable */
-	string dataType; /* type of variable */
-	unsigned int length; /* if it is an Array then length */
+	// string dataType; /* type of variable */
+	// unsigned int length; /* if it is an Array then length */
 public:
 	/* Constructors */
 	// Var(string,string,unsigned int);
 	Var(string,string);
-	bool isArray();
+	// bool isArray();
 	/* Methods */
-	void setDataType(string); /* Set the data Type */
+	// void setDataType(string); /* Set the data Type */
 	void traverse();
 	string getName();
 	//Value* codegen();
-	int getLength(){return length;}
+	// int getLength(){return length;}
 };
 
 class Vars:public astNode{
@@ -139,8 +145,15 @@ public:
 
 
 class fieldCode:public astNode{
-public:
-	virtual void traverse(){};
+// protected:
+// 	stmtType stype;
+// public:
+// 	virtual void traverse(){}
+// 	// virtual Value* codegen(){}
+// 	virtual bool has_return(){return false;}
+// 	void setStype(stmtType x){this->stype = x;}
+// 	stmtType getStype(){return this->stype;}
+
 };
 
 class fieldCodes:public astNode{
@@ -163,25 +176,54 @@ public:
 	void generateCode();
 };
 
+class expr:public fieldCode{
+private:
+	string lhs;
+	class exprnewst* rhs;
+public:
+	expr(string,class exprnewst*);
+	void traverse();
+};
+
 
 class arithmeticst:public fieldCode{
-private:
+public:
 	string op;
 	class exprnewst* lho;
 	class exprnewst* rho;
 public:
 	arithmeticst(class exprnewst*,string, class exprnewst*);
 	void traverse();
-}
+};
 
 class exprnewst:public fieldCode{
-private:
+public:
 	class arithmeticst* arthm;
 	string str;
 	int num;
 public:
 	exprnewst(class arithmeticst*);
-	exprnew(string);
-	exprnew(int);
+	exprnewst(string);
+	exprnewst(int);
+	void traverse();
+};
+
+class conds:public fieldCode{
+private:
+	vector<class cond*> condlist;
+public:
+	conds(){};
+	void push_back(class cond*);
+	void getCondList();
 	void traverse();
 }
+
+class cond:public fieldCode{
+private:
+	class exprnewst* lhi;
+	class exprnewst* rhi;
+	string compopr, multcond;
+public:
+	cond(class exprnewst*, string, class exprnewst*, string);
+	void traverse();
+};
