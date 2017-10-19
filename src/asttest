@@ -3,5 +3,10 @@ declblock{
 	int brr[222];
 }
 codeblock{
-			arr[2]=y+2;
+			if i>2
+			{
+			 f=f+g;
+			 f=2+2;
+			};
+
 }

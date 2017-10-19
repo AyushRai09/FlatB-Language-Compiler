@@ -37,6 +37,8 @@ union Node{
 	class exprnewst* exprnewsts;
 	class arithmeticst* arthm;
 	class expr* exp;
+	class condsst* conds;
+	class condst* cond;
 
 	// class Block* block;
 	// class varDecls* var_decls;
@@ -64,6 +66,8 @@ union Node{
 		code = NULL;
 		exprnewsts=NULL;
 		arthm=NULL;
+		conds=NULL;
+		cond=NULL;
 		// var_decls = NULL;
 		// stmts = NULL;
 		// callout_args = NULL;
@@ -208,22 +212,46 @@ public:
 	void traverse();
 };
 
-class conds:public fieldCode{
+class condsst:public fieldCode{
 private:
-	vector<class cond*> condlist;
+	vector<class condst*> condlist;
 public:
-	conds(){};
-	void push_back(class cond*);
-	void getCondList();
+	condsst(){};
+	void push_back(class condst*);
+	vector<class condst*> getCondList();
 	void traverse();
-}
+};
 
-class cond:public fieldCode{
-private:
+class condst:public fieldCode{
+public:
 	class exprnewst* lhi;
 	class exprnewst* rhi;
 	string compopr, multcond;
 public:
-	cond(class exprnewst*, string, class exprnewst*, string);
+	condst(class exprnewst*, string, class exprnewst*);
 	void traverse();
 };
+
+class ifelsest:public fieldCode{
+private:
+	class condsst* condition;
+	class fieldCodes* ifblock;
+	class fieldCodes* elseblock;
+public:
+	ifelsest(class condsst*,class fieldCodes*, class fieldCodes*);
+	void traverse();
+};
+
+class whilest:public fieldCode{
+private:
+	class condsst* condition;
+	class fieldCodes* block;
+public:
+	whilest(class condsst*, class fieldCodes*);
+	void traverse();
+};
+
+class forst:public fieldCode{
+private:
+	
+}

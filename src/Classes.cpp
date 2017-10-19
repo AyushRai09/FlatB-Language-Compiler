@@ -139,6 +139,10 @@ this->var_list = vars->getVarsList();
 //   var_list[i]->setDataType(dataType);
 // }
 }
+fieldDecls::fieldDecls(){
+this->cnt = 0;
+}
+
 Prog::Prog(class fieldDecls* fields, class fieldCodes* codes){
   this->decls=fields;
   this->codes=codes;
@@ -167,12 +171,22 @@ exprnewst::exprnewst(string str){
 exprnewst::exprnewst(int num){
 this->num=num;
 }
-cond::cond(class exprnewst* lhi, string compopr, class exprnewst* string multcond){
+condst::condst(class exprnewst* lhi, string compopr, class exprnewst*){
   this->lhi=lhi;
   this->compopr=compopr;
   this->rhi=rhi;
-  this->multcond=multcond;
 }
+ifelsest::ifelsest(class condsst* condition, class fieldCodes* ifblock, class fieldCodes* elseblock){
+  this->condition=condition;
+  this->ifblock=ifblock;
+  this->elseblock=elseblock;
+}
+
+whilest::whilest(class condsst* condition, class fieldCodes* block){
+  this->condition=condition;
+  this->block=block;
+}
+
 
 string Var::getName(){
   return name;
@@ -190,9 +204,6 @@ vector<class Var*> fieldDecl::getVarsList(){
   return var_list;
 }
 
-fieldDecls::fieldDecls(){
-this->cnt = 0;
-}
 void fieldDecls::push_back(class fieldDecl*var){
   decl_list.push_back(var);
   cnt++;
@@ -202,9 +213,9 @@ void fieldCodes::push_back(class fieldCode*var){
   fieldcodes.push_back(var);
   cnt++;
 }
-vector<class cond*> conds::getCondList(){
+vector<class condst*> condsst::getCondList(){
   return condlist;
 }
-void conds::push_back(class cond* cond){
+void condsst::push_back(class condst* cond){
   condlist.push_back(cond);
 }

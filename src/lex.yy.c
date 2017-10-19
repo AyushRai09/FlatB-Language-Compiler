@@ -850,12 +850,12 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 YY_RULE_SETUP
 #line 17 "scanner.l"
-return CODEBLOCK;
+{yylval.value = strdup(yytext);return CODEBLOCK;}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
 #line 18 "scanner.l"
-return DECLBLOCK;
+{yylval.value = strdup(yytext);return DECLBLOCK;}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
@@ -865,60 +865,60 @@ return declaration_list;
 case 4:
 YY_RULE_SETUP
 #line 20 "scanner.l"
-return FOR;
+{yylval.value = strdup(yytext);return FOR;}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
 #line 21 "scanner.l"
-return WHILE;
+{yylval.value = strdup(yytext);return WHILE;}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
 #line 22 "scanner.l"
-return AND;
+{yylval.value = strdup(yytext);return AND;}
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
 #line 23 "scanner.l"
-return OR;
+{yylval.value = strdup(yytext);return OR;}
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
 #line 24 "scanner.l"
 {
-			yylval.value = strdup(yytext);
-			printf("Token type: datatype->int, Lexeme/Token Value: %s\n", yytext);
-			return INT;
-		}
+							yylval.value = strdup(yytext);
+							printf("Token type: datatype->int, Lexeme/Token Value: %s\n", yytext);
+							return INT;
+								}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
 #line 29 "scanner.l"
 {
  					yylval.value = strdup(yytext);
-				printf("Label detected with the name: %s\n", yytext);
-				return LABEL;
- 			}
+					printf("Label detected with the name: %s\n", yytext);
+					return LABEL;
+ 													}
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
 #line 35 "scanner.l"
-return IF;
+{yylval.value = strdup(yytext);return IF;}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
 #line 36 "scanner.l"
-return ELSE;
+{yylval.value = strdup(yytext);return ELSE;}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
 #line 37 "scanner.l"
-return PRINT;
+{yylval.value = strdup(yytext);return PRINT;}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
 #line 38 "scanner.l"
-return READ;
+{yylval.value = strdup(yytext);return READ;}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP

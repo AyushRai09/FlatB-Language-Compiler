@@ -59,6 +59,8 @@ int errors=0;
 %type <exprnewsts> exprnew
 %type <arthm> arithmetic
 %type <exp> expr
+%type <conds> conds
+%type <cond> cond
 %type <value> compare
 %type <value> andor
 %%
@@ -85,10 +87,10 @@ code_blocks: { $$=new fieldCodes(); }
 code_block:print
 		| read
 		| expr {$$=$1;}
-		| IF conds '{' code_block '}'  {$$=new ifelsest($2,$4,NULL);}
-		| IF conds '{' code_block '}' ELSE '{' code_block '}'  {$$=new ifelsest($2,$4,$8);}
-		| WHILE conds '{' code_block '}'
-		| FOR forloop '{' code_block '}'
+		| IF conds '{' code_blocks '}'  {$$=new ifelsest($2,$4,NULL);}
+		| IF conds '{' code_blocks '}' ELSE '{' code_blocks '}'  {$$=new ifelsest($2,$4,$8);}
+		| WHILE conds '{' code_blocks '}' {$$=new whilest($2,$4);}
+		| FOR forloop '{' code_blocks '}'
 		| LABEL
 		| GOTO IDENTIFIER call
 
@@ -125,17 +127,18 @@ arithmetic: exprnew ADD exprnew {$$=new arithmeticst($1,string($2),$3);}
 		| exprnew MUL exprnew    {$$=new arithmeticst($1,string($2),$3);};
 
 conds: {$$=new condsst();}  | conds cond {$$->push_back($2);};
-cond: exprnew compare exprnew andor {$$=new condst($1,$2,$3,$4);};
+cond: exprnew compare exprnew {$$=new condst($1,$2,$3);cout << $$->compopr << "\n";};
 compare: GT {$$=$1;}
 	| LT  {$$=$1;}
 	| GTE  {$$=$1;}
 	| LTE  {$$=$1;}
 	| EE  {$$=$1;};
 
-andor: {$$=string("Nothing");}
+/*
+andor:
     | AND {$$=$1;}
 	  | OR {$$=$1;};
-
+*/
 forloop: IDENTIFIER '=' NUMBER ','  NUMBER inc
 inc: ','  NUMBER
 	|
