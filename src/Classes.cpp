@@ -237,3 +237,9 @@ vector<class condst*> condsst::getCondList(){
 void condsst::push_back(class condst* cond){
   condlist.push_back(cond);
 }
+void thingpsst::push_back(string item){
+  printList.push_back(item);
+}
+void thingrsst::push_back(string item){
+  readList.push_back(item);
+}

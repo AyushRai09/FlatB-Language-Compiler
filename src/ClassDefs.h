@@ -41,6 +41,8 @@ union Node{
 	class condst* cond;
 	class forloopinit* fors;
 	class callst* called;
+	class thingpsst* pr;
+	class thingrsst* rd;
 
 	Node(){
 		number = 0;
@@ -55,6 +57,8 @@ union Node{
 		cond=NULL;
 		fors=NULL;
 		called=NULL;
+		pr=NULL;
+		rd=NULL;
 	}
 	~Node(){};
 };
@@ -76,23 +80,13 @@ class astNode{
 
 
 class Var:public astNode{
-// private:
+private:
+	string declType;
+	string name;
 public:
-	string declType; /* Array or Normal */
-	string name; /* Name of the variable */
-	// string dataType; /* type of variable */
-	// unsigned int length; /* if it is an Array then length */
-public:
-	/* Constructors */
-	// Var(string,string,unsigned int);
 	Var(string,string);
-	// bool isArray();
-	/* Methods */
-	// void setDataType(string); /* Set the data Type */
 	void traverse();
 	string getName();
-	//Value* codegen();
-	// int getLength(){return length;}
 };
 
 class Vars:public astNode{
@@ -109,7 +103,7 @@ public:
 
 class fieldDecl:public astNode{
 private:
-	string dataType; /* Field declaration can have datatype and vaariables */
+	string dataType;
 	vector<class Var*> var_list;
 public:
 	fieldDecl(class Vars*);
@@ -132,15 +126,6 @@ public:
 
 
 class fieldCode:public astNode{
-// protected:
-// 	stmtType stype;
-// public:
-// 	virtual void traverse(){}
-// 	// virtual Value* codegen(){}
-// 	virtual bool has_return(){return false;}
-// 	void setStype(stmtType x){this->stype = x;}
-// 	stmtType getStype(){return this->stype;}
-
 };
 
 class fieldCodes:public astNode{
@@ -174,7 +159,7 @@ public:
 
 
 class arithmeticst:public fieldCode{
-public:
+private:
 	string op;
 	class exprnewst* lho;
 	class exprnewst* rho;
@@ -184,7 +169,7 @@ public:
 };
 
 class exprnewst:public fieldCode{
-public:
+private:
 	class arithmeticst* arthm;
 	string str;
 	int num;
@@ -206,7 +191,7 @@ public:
 };
 
 class condst:public fieldCode{
-public:
+private:
 	class exprnewst* lhi;
 	class exprnewst* rhi;
 	string compopr, multcond;
@@ -245,7 +230,7 @@ public:
 };
 
 class forloopinit:public fieldCode{
-public:
+private:
 	char * iteratorname;
 	int start,finish,inc;
 public:
@@ -268,4 +253,22 @@ private:
 public:
 	callst(class condsst*);
 	void traverse();
+};
+
+class thingpsst:public fieldCode{
+private:
+	vector<string> printList;
+public:
+	thingpsst(){}
+	void traverse();
+	void push_back(string);
+};
+
+class thingrsst:public fieldCode{
+private:
+	vector<string> readList;
+public:
+	thingrsst(){}
+	void traverse();
+	void push_back(string);
 };

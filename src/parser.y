@@ -11,6 +11,25 @@ extern "C" int errors;
 void yyerror(const char *s);
 class Prog* start = NULL;
 int errors=0;
+char* num2str(int a)
+{
+  string ans;
+  char * out;
+  int i;
+  while(a!=0)
+  {
+    ans+=(char)a%10;
+    a=a/10;
+  }
+
+  int len=ans.length();
+  out=(char*)malloc(sizeof(char)*len);
+  for(i=len-1;i>=0;i--)
+  {
+    out[len-i]=ans[i];
+  }
+  return out;
+}
 %}
 
 %start program
@@ -27,7 +46,7 @@ int errors=0;
 %token <value> INT
 %token <value> ARRAY
 %token PRINT
-%token STRING
+%token <value> STRING
 %token CODEBLOCK
 %token <value> READ
 %token <value>IF
@@ -44,10 +63,10 @@ int errors=0;
 %token <value>FOR
 %token <value>LABEL
 %token GOTO
-%left '+'
-%left '*'
-%left '/'
-%left '-'
+%left ADD
+%left MUL
+%left DIV
+%left SUB
 
 %type <prog> program
 %type <fields> decl_blocks
@@ -66,6 +85,10 @@ int errors=0;
 %type <fors> forloop
 %type <number> inc
 %type <called> call
+%type <pr> thingps
+%type <rd> thingrs
+%type <value> thingr
+%type <value> thingp
 %%
 
 program: DECLBLOCK '{' decl_blocks '}' CODEBLOCK '{' code_blocks '}' {
@@ -82,14 +105,14 @@ decl_block:  {$$=NULL;}
 variables: variable { $$=new Vars();$$->push_back($1);}
           | variables ',' variable {$$->push_back($3);};
 
-variable:  IDENTIFIER {$$ = new Var(string("Identifier"),string($1));cout<<$$->name<<"\n";}
-          | ARRAY  {$$=new Var(string("Array"),string($1));cout<<$$->name<<"\n";};
+variable:  IDENTIFIER {$$ = new Var(string("Identifier"),string($1));}
+          | ARRAY  {$$=new Var(string("Array"),string($1));};
 
 code_blocks: { $$=new fieldCodes(); }
           | code_blocks code_block {$$->push_back($2);};
 
-code_block:print ';'
-		| read ';'
+code_block:PRINT thingps ';' {$$=$2;}
+		| READ thingrs ';'       {$$=$2;}
 		| expr ';' {$$=$1;}
 		| IF conds '{' code_blocks '}'  {$$=new ifelsest($2,$4,NULL);}
 		| IF conds '{' code_blocks '}' ELSE '{' code_blocks '}'  {$$=new ifelsest($2,$4,$8);}
@@ -98,23 +121,19 @@ code_block:print ';'
 		| LABEL GOTO IDENTIFIER call ';' {$$=new gotost($1,$4);}
 
 
-print: PRINT things
-things:  IDENTIFIER
-		| NUMBER
-		| ARRAY
-		| IDENTIFIER ',' things
-		| NUMBER ',' things
-		| ARRAY ',' things
-		| STRING ',' things
+thingps:thingp {$$=new thingpsst();}
+      | thingps ',' thingp {$$->push_back(string($3));};
+thingp:  IDENTIFIER {$$=$1;}
+		| NUMBER        {$$=num2str($1);}
+		| ARRAY         {$$=$1;}
+		| STRING        {$$=$1;};
 
 
-read: READ thingsr
-thingsr: IDENTIFIER
-		| NUMBER
-		| ARRAY
-		| IDENTIFIER ',' thingsr
-		| NUMBER ',' thingsr
-		| ARRAY ',' thingsr
+thingrs:thingr  {$$=new thingrsst();$$->push_back(string($1));}
+      | thingrs ',' thingr {$$->push_back($3);};
+thingr: IDENTIFIER {$$=$1;}
+		| NUMBER       {$$=num2str($1);}
+		| ARRAY        {$$=$1;};
 
 expr: IDENTIFIER '=' exprnew {$$=new expr($1,$3);}
 		| ARRAY '=' exprnew {$$=new expr($1,$3);} ;

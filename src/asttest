@@ -3,13 +3,6 @@ declblock{
 	int brr[222];
 }
 codeblock{
-			if i>2
-			{
-			 f=f+g;
-			 f=2+2;
-			}
-			for i = 1, 100 {
-				sum = sum + data[i];
-		 	}
-
+			a=z;
+			print a,b;
 }
