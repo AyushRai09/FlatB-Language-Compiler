@@ -39,23 +39,8 @@ union Node{
 	class expr* exp;
 	class condsst* conds;
 	class condst* cond;
-
-	// class Block* block;
-	// class varDecls* var_decls;
-	// class varDecl* var_decl;
-	// class Stmts* stmts;
-	// class Stmt* stmt;
-	// class Expr* expr;
-	// class calloutArg* callout_arg;
-	// class calloutArgs* callout_args;
-	// class Params* parameters;
-	// class methodArgs* method_args;
-	// class methodArg* method_arg;
-	// class methodCall* method_call;
-	// class Location* location;
-	// class Assignment* assignment;
-	// class Literal* literal;
-	// class stringList* mylist;
+	class forloopinit* fors;
+	class callst* called;
 
 	Node(){
 		number = 0;
@@ -68,10 +53,8 @@ union Node{
 		arthm=NULL;
 		conds=NULL;
 		cond=NULL;
-		// var_decls = NULL;
-		// stmts = NULL;
-		// callout_args = NULL;
-		// method_args = NULL;
+		fors=NULL;
+		called=NULL;
 	}
 	~Node(){};
 };
@@ -228,7 +211,7 @@ public:
 	class exprnewst* rhi;
 	string compopr, multcond;
 public:
-	condst(class exprnewst*, string, class exprnewst*);
+	condst(class exprnewst*, string, class exprnewst*, string);
 	void traverse();
 };
 
@@ -253,5 +236,36 @@ public:
 
 class forst:public fieldCode{
 private:
-	
-}
+	class forloopinit* init;
+	class fieldCodes* block;
+public:
+	forst(class forloopinit*, class fieldCodes*);
+	void traverse();
+
+};
+
+class forloopinit:public fieldCode{
+public:
+	char * iteratorname;
+	int start,finish,inc;
+public:
+	forloopinit(char*,int,int,int);
+	void traverse();
+};
+
+class gotost:public fieldCode{
+private:
+	string labelname;
+	class callst* call;
+public:
+	gotost(string,class callst*);
+	void traverse();
+};
+
+class callst:public fieldCode{
+private:
+	class condsst* conds;
+public:
+	callst(class condsst*);
+	void traverse();
+};

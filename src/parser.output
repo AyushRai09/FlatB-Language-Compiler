@@ -1,26 +1,19 @@
-Nonterminals useless in grammar
-
-   andor
-
-
 Terminals unused in grammar
 
    declaration_list
    statement_list
    ETOK
    COMPARE
-   AND
-   OR
    '+'
    '*'
    '/'
    '-'
 
 
-State 93 conflicts: 4 shift/reduce
 State 94 conflicts: 4 shift/reduce
 State 95 conflicts: 4 shift/reduce
 State 96 conflicts: 4 shift/reduce
+State 97 conflicts: 4 shift/reduce
 
 
 Grammar
@@ -42,68 +35,71 @@ Grammar
     9         | ARRAY
 
    10 code_blocks: %empty
-   11            | code_blocks code_block ';'
+   11            | code_blocks code_block
 
-   12 code_block: print
-   13           | read
-   14           | expr
+   12 code_block: print ';'
+   13           | read ';'
+   14           | expr ';'
    15           | IF conds '{' code_blocks '}'
    16           | IF conds '{' code_blocks '}' ELSE '{' code_blocks '}'
-   17           | WHILE conds '{' code_block '}'
-   18           | FOR forloop '{' code_block '}'
-   19           | LABEL
-   20           | GOTO IDENTIFIER call
+   17           | WHILE conds '{' code_blocks '}'
+   18           | FOR forloop '{' code_blocks '}'
+   19           | LABEL GOTO IDENTIFIER call ';'
 
-   21 print: PRINT things
+   20 print: PRINT things
 
-   22 things: IDENTIFIER
-   23       | NUMBER
-   24       | ARRAY
-   25       | IDENTIFIER ',' things
-   26       | NUMBER ',' things
-   27       | ARRAY ',' things
-   28       | STRING ',' things
+   21 things: IDENTIFIER
+   22       | NUMBER
+   23       | ARRAY
+   24       | IDENTIFIER ',' things
+   25       | NUMBER ',' things
+   26       | ARRAY ',' things
+   27       | STRING ',' things
 
-   29 read: READ thingsr
+   28 read: READ thingsr
 
-   30 thingsr: IDENTIFIER
-   31        | NUMBER
-   32        | ARRAY
-   33        | IDENTIFIER ',' thingsr
-   34        | NUMBER ',' thingsr
-   35        | ARRAY ',' thingsr
+   29 thingsr: IDENTIFIER
+   30        | NUMBER
+   31        | ARRAY
+   32        | IDENTIFIER ',' thingsr
+   33        | NUMBER ',' thingsr
+   34        | ARRAY ',' thingsr
 
-   36 expr: IDENTIFIER '=' exprnew
-   37     | ARRAY '=' exprnew
+   35 expr: IDENTIFIER '=' exprnew
+   36     | ARRAY '=' exprnew
 
-   38 exprnew: arithmetic
-   39        | IDENTIFIER
-   40        | NUMBER
-   41        | ARRAY
+   37 exprnew: arithmetic
+   38        | IDENTIFIER
+   39        | NUMBER
+   40        | ARRAY
 
-   42 arithmetic: exprnew ADD exprnew
-   43           | exprnew SUB exprnew
-   44           | exprnew DIV exprnew
-   45           | exprnew MUL exprnew
+   41 arithmetic: exprnew ADD exprnew
+   42           | exprnew SUB exprnew
+   43           | exprnew DIV exprnew
+   44           | exprnew MUL exprnew
 
-   46 conds: %empty
-   47      | conds cond
+   45 conds: %empty
+   46      | conds cond
 
-   48 cond: exprnew compare exprnew
+   47 cond: exprnew compare exprnew andor
 
-   49 compare: GT
-   50        | LT
-   51        | GTE
-   52        | LTE
-   53        | EE
+   48 compare: GT
+   49        | LT
+   50        | GTE
+   51        | LTE
+   52        | EE
 
-   54 forloop: IDENTIFIER '=' NUMBER ',' NUMBER inc
+   53 andor: %empty
+   54      | AND
+   55      | OR
 
-   55 inc: ',' NUMBER
-   56    | %empty
+   56 forloop: IDENTIFIER '=' NUMBER ',' NUMBER inc
 
-   57 call: IF cond
-   58     | %empty
+   57 inc: %empty
+   58    | ',' NUMBER
+
+   59 call: %empty
+   60     | IF conds
 
 
 Terminals, with rules where they appear
@@ -111,44 +107,44 @@ Terminals, with rules where they appear
 $end (0) 0
 '*' (42)
 '+' (43)
-',' (44) 7 25 26 27 28 33 34 35 54 55
+',' (44) 7 24 25 26 27 32 33 34 56 58
 '-' (45)
 '/' (47)
-';' (59) 3 11
-'=' (61) 36 37 54
+';' (59) 3 12 13 14 19
+'=' (61) 35 36 56
 '{' (123) 1 15 16 17 18
 '}' (125) 1 15 16 17 18
 error (256)
 declaration_list (258)
-ADD (259) 42
-SUB (260) 43
-MUL (261) 45
-DIV (262) 44
+ADD (259) 41
+SUB (260) 42
+MUL (261) 44
+DIV (262) 43
 DECLBLOCK (263) 1
 statement_list (264)
-NUMBER (265) 23 26 31 34 40 54 55
-IDENTIFIER (266) 8 20 22 25 30 33 36 39 54
+NUMBER (265) 22 25 30 33 39 56 58
+IDENTIFIER (266) 8 19 21 24 29 32 35 38 56
 ETOK (267)
 INT (268) 5
-ARRAY (269) 9 24 27 32 35 37 41
-PRINT (270) 21
-STRING (271) 28
+ARRAY (269) 9 23 26 31 34 36 40
+PRINT (270) 20
+STRING (271) 27
 CODEBLOCK (272) 1
-READ (273) 29
-IF (274) 15 16 57
+READ (273) 28
+IF (274) 15 16 60
 ELSE (275) 16
 COMPARE (276)
-EE (277) 53
-GT (278) 49
-LT (279) 50
-GTE (280) 51
-LTE (281) 52
-AND (282)
-OR (283)
+EE (277) 52
+GT (278) 48
+LT (279) 49
+GTE (280) 50
+LTE (281) 51
+AND (282) 54
+OR (283) 55
 WHILE (284) 17
 FOR (285) 18
 LABEL (286) 19
-GOTO (287) 20
+GOTO (287) 19
 
 
 Nonterminals, with rules where they appear
@@ -166,35 +162,37 @@ variables (46)
 variable (47)
     on left: 8 9, on right: 6 7
 code_blocks (48)
-    on left: 10 11, on right: 1 11 15 16
+    on left: 10 11, on right: 1 11 15 16 17 18
 code_block (49)
-    on left: 12 13 14 15 16 17 18 19 20, on right: 11 17 18
+    on left: 12 13 14 15 16 17 18 19, on right: 11
 print (50)
-    on left: 21, on right: 12
+    on left: 20, on right: 12
 things (51)
-    on left: 22 23 24 25 26 27 28, on right: 21 25 26 27 28
+    on left: 21 22 23 24 25 26 27, on right: 20 24 25 26 27
 read (52)
-    on left: 29, on right: 13
+    on left: 28, on right: 13
 thingsr (53)
-    on left: 30 31 32 33 34 35, on right: 29 33 34 35
+    on left: 29 30 31 32 33 34, on right: 28 32 33 34
 expr (54)
-    on left: 36 37, on right: 14
+    on left: 35 36, on right: 14
 exprnew (55)
-    on left: 38 39 40 41, on right: 36 37 42 43 44 45 48
+    on left: 37 38 39 40, on right: 35 36 41 42 43 44 47
 arithmetic (56)
-    on left: 42 43 44 45, on right: 38
+    on left: 41 42 43 44, on right: 37
 conds (57)
-    on left: 46 47, on right: 15 16 17 47
+    on left: 45 46, on right: 15 16 17 46 60
 cond (58)
-    on left: 48, on right: 47 57
+    on left: 47, on right: 46
 compare (59)
-    on left: 49 50 51 52 53, on right: 48
-forloop (60)
-    on left: 54, on right: 18
-inc (61)
-    on left: 55 56, on right: 54
-call (62)
-    on left: 57 58, on right: 20
+    on left: 48 49 50 51 52, on right: 47
+andor (60)
+    on left: 53 54 55, on right: 47
+forloop (61)
+    on left: 56, on right: 18
+inc (62)
+    on left: 57 58, on right: 56
+call (63)
+    on left: 59 60, on right: 19
 
 
 State 0
@@ -332,7 +330,7 @@ State 15
 State 16
 
     1 program: DECLBLOCK '{' decl_blocks '}' CODEBLOCK '{' code_blocks . '}'
-   11 code_blocks: code_blocks . code_block ';'
+   11 code_blocks: code_blocks . code_block
 
     IDENTIFIER  shift, and go to state 18
     ARRAY       shift, and go to state 19
@@ -342,13 +340,12 @@ State 16
     WHILE       shift, and go to state 23
     FOR         shift, and go to state 24
     LABEL       shift, and go to state 25
-    GOTO        shift, and go to state 26
-    '}'         shift, and go to state 27
+    '}'         shift, and go to state 26
 
-    code_block  go to state 28
-    print       go to state 29
-    read        go to state 30
-    expr        go to state 31
+    code_block  go to state 27
+    print       go to state 28
+    read        go to state 29
+    expr        go to state 30
 
 
 State 17
@@ -358,44 +355,44 @@ State 17
     IDENTIFIER  shift, and go to state 12
     ARRAY       shift, and go to state 13
 
-    variable  go to state 32
+    variable  go to state 31
 
 
 State 18
 
-   36 expr: IDENTIFIER . '=' exprnew
+   35 expr: IDENTIFIER . '=' exprnew
 
-    '='  shift, and go to state 33
+    '='  shift, and go to state 32
 
 
 State 19
 
-   37 expr: ARRAY . '=' exprnew
+   36 expr: ARRAY . '=' exprnew
 
-    '='  shift, and go to state 34
+    '='  shift, and go to state 33
 
 
 State 20
 
-   21 print: PRINT . things
+   20 print: PRINT . things
 
-    NUMBER      shift, and go to state 35
-    IDENTIFIER  shift, and go to state 36
-    ARRAY       shift, and go to state 37
-    STRING      shift, and go to state 38
+    NUMBER      shift, and go to state 34
+    IDENTIFIER  shift, and go to state 35
+    ARRAY       shift, and go to state 36
+    STRING      shift, and go to state 37
 
-    things  go to state 39
+    things  go to state 38
 
 
 State 21
 
-   29 read: READ . thingsr
+   28 read: READ . thingsr
 
-    NUMBER      shift, and go to state 40
-    IDENTIFIER  shift, and go to state 41
-    ARRAY       shift, and go to state 42
+    NUMBER      shift, and go to state 39
+    IDENTIFIER  shift, and go to state 40
+    ARRAY       shift, and go to state 41
 
-    thingsr  go to state 43
+    thingsr  go to state 42
 
 
 State 22
@@ -403,281 +400,307 @@ State 22
    15 code_block: IF . conds '{' code_blocks '}'
    16           | IF . conds '{' code_blocks '}' ELSE '{' code_blocks '}'
 
-    $default  reduce using rule 46 (conds)
+    $default  reduce using rule 45 (conds)
 
-    conds  go to state 44
+    conds  go to state 43
 
 
 State 23
 
-   17 code_block: WHILE . conds '{' code_block '}'
+   17 code_block: WHILE . conds '{' code_blocks '}'
 
-    $default  reduce using rule 46 (conds)
+    $default  reduce using rule 45 (conds)
 
-    conds  go to state 45
+    conds  go to state 44
 
 
 State 24
 
-   18 code_block: FOR . forloop '{' code_block '}'
+   18 code_block: FOR . forloop '{' code_blocks '}'
 
-    IDENTIFIER  shift, and go to state 46
+    IDENTIFIER  shift, and go to state 45
 
-    forloop  go to state 47
+    forloop  go to state 46
 
 
 State 25
 
-   19 code_block: LABEL .
+   19 code_block: LABEL . GOTO IDENTIFIER call ';'
 
-    $default  reduce using rule 19 (code_block)
+    GOTO  shift, and go to state 47
 
 
 State 26
-
-   20 code_block: GOTO . IDENTIFIER call
-
-    IDENTIFIER  shift, and go to state 48
-
-
-State 27
 
     1 program: DECLBLOCK '{' decl_blocks '}' CODEBLOCK '{' code_blocks '}' .
 
     $default  reduce using rule 1 (program)
 
 
+State 27
+
+   11 code_blocks: code_blocks code_block .
+
+    $default  reduce using rule 11 (code_blocks)
+
+
 State 28
 
-   11 code_blocks: code_blocks code_block . ';'
+   12 code_block: print . ';'
 
-    ';'  shift, and go to state 49
+    ';'  shift, and go to state 48
 
 
 State 29
 
-   12 code_block: print .
+   13 code_block: read . ';'
 
-    $default  reduce using rule 12 (code_block)
+    ';'  shift, and go to state 49
 
 
 State 30
 
-   13 code_block: read .
+   14 code_block: expr . ';'
 
-    $default  reduce using rule 13 (code_block)
+    ';'  shift, and go to state 50
 
 
 State 31
-
-   14 code_block: expr .
-
-    $default  reduce using rule 14 (code_block)
-
-
-State 32
 
     7 variables: variables ',' variable .
 
     $default  reduce using rule 7 (variables)
 
 
+State 32
+
+   35 expr: IDENTIFIER '=' . exprnew
+
+    NUMBER      shift, and go to state 51
+    IDENTIFIER  shift, and go to state 52
+    ARRAY       shift, and go to state 53
+
+    exprnew     go to state 54
+    arithmetic  go to state 55
+
+
 State 33
 
-   36 expr: IDENTIFIER '=' . exprnew
+   36 expr: ARRAY '=' . exprnew
 
-    NUMBER      shift, and go to state 50
-    IDENTIFIER  shift, and go to state 51
-    ARRAY       shift, and go to state 52
+    NUMBER      shift, and go to state 51
+    IDENTIFIER  shift, and go to state 52
+    ARRAY       shift, and go to state 53
 
-    exprnew     go to state 53
-    arithmetic  go to state 54
+    exprnew     go to state 56
+    arithmetic  go to state 55
 
 
 State 34
 
-   37 expr: ARRAY '=' . exprnew
-
-    NUMBER      shift, and go to state 50
-    IDENTIFIER  shift, and go to state 51
-    ARRAY       shift, and go to state 52
-
-    exprnew     go to state 55
-    arithmetic  go to state 54
-
-
-State 35
-
-   23 things: NUMBER .
-   26       | NUMBER . ',' things
-
-    ','  shift, and go to state 56
-
-    $default  reduce using rule 23 (things)
-
-
-State 36
-
-   22 things: IDENTIFIER .
-   25       | IDENTIFIER . ',' things
+   22 things: NUMBER .
+   25       | NUMBER . ',' things
 
     ','  shift, and go to state 57
 
     $default  reduce using rule 22 (things)
 
 
-State 37
+State 35
 
-   24 things: ARRAY .
-   27       | ARRAY . ',' things
+   21 things: IDENTIFIER .
+   24       | IDENTIFIER . ',' things
 
     ','  shift, and go to state 58
 
-    $default  reduce using rule 24 (things)
+    $default  reduce using rule 21 (things)
+
+
+State 36
+
+   23 things: ARRAY .
+   26       | ARRAY . ',' things
+
+    ','  shift, and go to state 59
+
+    $default  reduce using rule 23 (things)
+
+
+State 37
+
+   27 things: STRING . ',' things
+
+    ','  shift, and go to state 60
 
 
 State 38
 
-   28 things: STRING . ',' things
+   20 print: PRINT things .
 
-    ','  shift, and go to state 59
+    $default  reduce using rule 20 (print)
 
 
 State 39
 
-   21 print: PRINT things .
-
-    $default  reduce using rule 21 (print)
-
-
-State 40
-
-   31 thingsr: NUMBER .
-   34        | NUMBER . ',' thingsr
-
-    ','  shift, and go to state 60
-
-    $default  reduce using rule 31 (thingsr)
-
-
-State 41
-
-   30 thingsr: IDENTIFIER .
-   33        | IDENTIFIER . ',' thingsr
+   30 thingsr: NUMBER .
+   33        | NUMBER . ',' thingsr
 
     ','  shift, and go to state 61
 
     $default  reduce using rule 30 (thingsr)
 
 
-State 42
+State 40
 
-   32 thingsr: ARRAY .
-   35        | ARRAY . ',' thingsr
+   29 thingsr: IDENTIFIER .
+   32        | IDENTIFIER . ',' thingsr
 
     ','  shift, and go to state 62
 
-    $default  reduce using rule 32 (thingsr)
+    $default  reduce using rule 29 (thingsr)
+
+
+State 41
+
+   31 thingsr: ARRAY .
+   34        | ARRAY . ',' thingsr
+
+    ','  shift, and go to state 63
+
+    $default  reduce using rule 31 (thingsr)
+
+
+State 42
+
+   28 read: READ thingsr .
+
+    $default  reduce using rule 28 (read)
 
 
 State 43
 
-   29 read: READ thingsr .
+   15 code_block: IF conds . '{' code_blocks '}'
+   16           | IF conds . '{' code_blocks '}' ELSE '{' code_blocks '}'
+   46 conds: conds . cond
 
-    $default  reduce using rule 29 (read)
+    NUMBER      shift, and go to state 51
+    IDENTIFIER  shift, and go to state 52
+    ARRAY       shift, and go to state 53
+    '{'         shift, and go to state 64
+
+    exprnew     go to state 65
+    arithmetic  go to state 55
+    cond        go to state 66
 
 
 State 44
 
-   15 code_block: IF conds . '{' code_blocks '}'
-   16           | IF conds . '{' code_blocks '}' ELSE '{' code_blocks '}'
-   47 conds: conds . cond
+   17 code_block: WHILE conds . '{' code_blocks '}'
+   46 conds: conds . cond
 
-    NUMBER      shift, and go to state 50
-    IDENTIFIER  shift, and go to state 51
-    ARRAY       shift, and go to state 52
-    '{'         shift, and go to state 63
+    NUMBER      shift, and go to state 51
+    IDENTIFIER  shift, and go to state 52
+    ARRAY       shift, and go to state 53
+    '{'         shift, and go to state 67
 
-    exprnew     go to state 64
-    arithmetic  go to state 54
-    cond        go to state 65
+    exprnew     go to state 65
+    arithmetic  go to state 55
+    cond        go to state 66
 
 
 State 45
 
-   17 code_block: WHILE conds . '{' code_block '}'
-   47 conds: conds . cond
+   56 forloop: IDENTIFIER . '=' NUMBER ',' NUMBER inc
 
-    NUMBER      shift, and go to state 50
-    IDENTIFIER  shift, and go to state 51
-    ARRAY       shift, and go to state 52
-    '{'         shift, and go to state 66
-
-    exprnew     go to state 64
-    arithmetic  go to state 54
-    cond        go to state 65
+    '='  shift, and go to state 68
 
 
 State 46
 
-   54 forloop: IDENTIFIER . '=' NUMBER ',' NUMBER inc
+   18 code_block: FOR forloop . '{' code_blocks '}'
 
-    '='  shift, and go to state 67
+    '{'  shift, and go to state 69
 
 
 State 47
 
-   18 code_block: FOR forloop . '{' code_block '}'
+   19 code_block: LABEL GOTO . IDENTIFIER call ';'
 
-    '{'  shift, and go to state 68
+    IDENTIFIER  shift, and go to state 70
 
 
 State 48
 
-   20 code_block: GOTO IDENTIFIER . call
+   12 code_block: print ';' .
 
-    IF  shift, and go to state 69
-
-    $default  reduce using rule 58 (call)
-
-    call  go to state 70
+    $default  reduce using rule 12 (code_block)
 
 
 State 49
 
-   11 code_blocks: code_blocks code_block ';' .
+   13 code_block: read ';' .
 
-    $default  reduce using rule 11 (code_blocks)
+    $default  reduce using rule 13 (code_block)
 
 
 State 50
 
-   40 exprnew: NUMBER .
+   14 code_block: expr ';' .
 
-    $default  reduce using rule 40 (exprnew)
+    $default  reduce using rule 14 (code_block)
 
 
 State 51
 
-   39 exprnew: IDENTIFIER .
+   39 exprnew: NUMBER .
 
     $default  reduce using rule 39 (exprnew)
 
 
 State 52
 
-   41 exprnew: ARRAY .
+   38 exprnew: IDENTIFIER .
 
-    $default  reduce using rule 41 (exprnew)
+    $default  reduce using rule 38 (exprnew)
 
 
 State 53
 
-   36 expr: IDENTIFIER '=' exprnew .
-   42 arithmetic: exprnew . ADD exprnew
-   43           | exprnew . SUB exprnew
-   44           | exprnew . DIV exprnew
-   45           | exprnew . MUL exprnew
+   40 exprnew: ARRAY .
+
+    $default  reduce using rule 40 (exprnew)
+
+
+State 54
+
+   35 expr: IDENTIFIER '=' exprnew .
+   41 arithmetic: exprnew . ADD exprnew
+   42           | exprnew . SUB exprnew
+   43           | exprnew . DIV exprnew
+   44           | exprnew . MUL exprnew
+
+    ADD  shift, and go to state 71
+    SUB  shift, and go to state 72
+    MUL  shift, and go to state 73
+    DIV  shift, and go to state 74
+
+    $default  reduce using rule 35 (expr)
+
+
+State 55
+
+   37 exprnew: arithmetic .
+
+    $default  reduce using rule 37 (exprnew)
+
+
+State 56
+
+   36 expr: ARRAY '=' exprnew .
+   41 arithmetic: exprnew . ADD exprnew
+   42           | exprnew . SUB exprnew
+   43           | exprnew . DIV exprnew
+   44           | exprnew . MUL exprnew
 
     ADD  shift, and go to state 71
     SUB  shift, and go to state 72
@@ -687,111 +710,88 @@ State 53
     $default  reduce using rule 36 (expr)
 
 
-State 54
+State 57
 
-   38 exprnew: arithmetic .
+   25 things: NUMBER ',' . things
 
-    $default  reduce using rule 38 (exprnew)
-
-
-State 55
-
-   37 expr: ARRAY '=' exprnew .
-   42 arithmetic: exprnew . ADD exprnew
-   43           | exprnew . SUB exprnew
-   44           | exprnew . DIV exprnew
-   45           | exprnew . MUL exprnew
-
-    ADD  shift, and go to state 71
-    SUB  shift, and go to state 72
-    MUL  shift, and go to state 73
-    DIV  shift, and go to state 74
-
-    $default  reduce using rule 37 (expr)
-
-
-State 56
-
-   26 things: NUMBER ',' . things
-
-    NUMBER      shift, and go to state 35
-    IDENTIFIER  shift, and go to state 36
-    ARRAY       shift, and go to state 37
-    STRING      shift, and go to state 38
+    NUMBER      shift, and go to state 34
+    IDENTIFIER  shift, and go to state 35
+    ARRAY       shift, and go to state 36
+    STRING      shift, and go to state 37
 
     things  go to state 75
 
 
-State 57
+State 58
 
-   25 things: IDENTIFIER ',' . things
+   24 things: IDENTIFIER ',' . things
 
-    NUMBER      shift, and go to state 35
-    IDENTIFIER  shift, and go to state 36
-    ARRAY       shift, and go to state 37
-    STRING      shift, and go to state 38
+    NUMBER      shift, and go to state 34
+    IDENTIFIER  shift, and go to state 35
+    ARRAY       shift, and go to state 36
+    STRING      shift, and go to state 37
 
     things  go to state 76
 
 
-State 58
+State 59
 
-   27 things: ARRAY ',' . things
+   26 things: ARRAY ',' . things
 
-    NUMBER      shift, and go to state 35
-    IDENTIFIER  shift, and go to state 36
-    ARRAY       shift, and go to state 37
-    STRING      shift, and go to state 38
+    NUMBER      shift, and go to state 34
+    IDENTIFIER  shift, and go to state 35
+    ARRAY       shift, and go to state 36
+    STRING      shift, and go to state 37
 
     things  go to state 77
 
 
-State 59
+State 60
 
-   28 things: STRING ',' . things
+   27 things: STRING ',' . things
 
-    NUMBER      shift, and go to state 35
-    IDENTIFIER  shift, and go to state 36
-    ARRAY       shift, and go to state 37
-    STRING      shift, and go to state 38
+    NUMBER      shift, and go to state 34
+    IDENTIFIER  shift, and go to state 35
+    ARRAY       shift, and go to state 36
+    STRING      shift, and go to state 37
 
     things  go to state 78
 
 
-State 60
+State 61
 
-   34 thingsr: NUMBER ',' . thingsr
+   33 thingsr: NUMBER ',' . thingsr
 
-    NUMBER      shift, and go to state 40
-    IDENTIFIER  shift, and go to state 41
-    ARRAY       shift, and go to state 42
+    NUMBER      shift, and go to state 39
+    IDENTIFIER  shift, and go to state 40
+    ARRAY       shift, and go to state 41
 
     thingsr  go to state 79
 
 
-State 61
+State 62
 
-   33 thingsr: IDENTIFIER ',' . thingsr
+   32 thingsr: IDENTIFIER ',' . thingsr
 
-    NUMBER      shift, and go to state 40
-    IDENTIFIER  shift, and go to state 41
-    ARRAY       shift, and go to state 42
+    NUMBER      shift, and go to state 39
+    IDENTIFIER  shift, and go to state 40
+    ARRAY       shift, and go to state 41
 
     thingsr  go to state 80
 
 
-State 62
+State 63
 
-   35 thingsr: ARRAY ',' . thingsr
+   34 thingsr: ARRAY ',' . thingsr
 
-    NUMBER      shift, and go to state 40
-    IDENTIFIER  shift, and go to state 41
-    ARRAY       shift, and go to state 42
+    NUMBER      shift, and go to state 39
+    IDENTIFIER  shift, and go to state 40
+    ARRAY       shift, and go to state 41
 
     thingsr  go to state 81
 
 
-State 63
+State 64
 
    15 code_block: IF conds '{' . code_blocks '}'
    16           | IF conds '{' . code_blocks '}' ELSE '{' code_blocks '}'
@@ -801,13 +801,13 @@ State 63
     code_blocks  go to state 82
 
 
-State 64
+State 65
 
-   42 arithmetic: exprnew . ADD exprnew
-   43           | exprnew . SUB exprnew
-   44           | exprnew . DIV exprnew
-   45           | exprnew . MUL exprnew
-   48 cond: exprnew . compare exprnew
+   41 arithmetic: exprnew . ADD exprnew
+   42           | exprnew . SUB exprnew
+   43           | exprnew . DIV exprnew
+   44           | exprnew . MUL exprnew
+   47 cond: exprnew . compare exprnew andor
 
     ADD  shift, and go to state 71
     SUB  shift, and go to state 72
@@ -822,180 +822,149 @@ State 64
     compare  go to state 88
 
 
-State 65
-
-   47 conds: conds cond .
-
-    $default  reduce using rule 47 (conds)
-
-
 State 66
 
-   17 code_block: WHILE conds '{' . code_block '}'
+   46 conds: conds cond .
 
-    IDENTIFIER  shift, and go to state 18
-    ARRAY       shift, and go to state 19
-    PRINT       shift, and go to state 20
-    READ        shift, and go to state 21
-    IF          shift, and go to state 22
-    WHILE       shift, and go to state 23
-    FOR         shift, and go to state 24
-    LABEL       shift, and go to state 25
-    GOTO        shift, and go to state 26
-
-    code_block  go to state 89
-    print       go to state 29
-    read        go to state 30
-    expr        go to state 31
+    $default  reduce using rule 46 (conds)
 
 
 State 67
 
-   54 forloop: IDENTIFIER '=' . NUMBER ',' NUMBER inc
+   17 code_block: WHILE conds '{' . code_blocks '}'
 
-    NUMBER  shift, and go to state 90
+    $default  reduce using rule 10 (code_blocks)
+
+    code_blocks  go to state 89
 
 
 State 68
 
-   18 code_block: FOR forloop '{' . code_block '}'
+   56 forloop: IDENTIFIER '=' . NUMBER ',' NUMBER inc
 
-    IDENTIFIER  shift, and go to state 18
-    ARRAY       shift, and go to state 19
-    PRINT       shift, and go to state 20
-    READ        shift, and go to state 21
-    IF          shift, and go to state 22
-    WHILE       shift, and go to state 23
-    FOR         shift, and go to state 24
-    LABEL       shift, and go to state 25
-    GOTO        shift, and go to state 26
-
-    code_block  go to state 91
-    print       go to state 29
-    read        go to state 30
-    expr        go to state 31
+    NUMBER  shift, and go to state 90
 
 
 State 69
 
-   57 call: IF . cond
+   18 code_block: FOR forloop '{' . code_blocks '}'
 
-    NUMBER      shift, and go to state 50
-    IDENTIFIER  shift, and go to state 51
-    ARRAY       shift, and go to state 52
+    $default  reduce using rule 10 (code_blocks)
 
-    exprnew     go to state 64
-    arithmetic  go to state 54
-    cond        go to state 92
+    code_blocks  go to state 91
 
 
 State 70
 
-   20 code_block: GOTO IDENTIFIER call .
+   19 code_block: LABEL GOTO IDENTIFIER . call ';'
 
-    $default  reduce using rule 20 (code_block)
+    IF  shift, and go to state 92
+
+    $default  reduce using rule 59 (call)
+
+    call  go to state 93
 
 
 State 71
 
-   42 arithmetic: exprnew ADD . exprnew
+   41 arithmetic: exprnew ADD . exprnew
 
-    NUMBER      shift, and go to state 50
-    IDENTIFIER  shift, and go to state 51
-    ARRAY       shift, and go to state 52
+    NUMBER      shift, and go to state 51
+    IDENTIFIER  shift, and go to state 52
+    ARRAY       shift, and go to state 53
 
-    exprnew     go to state 93
-    arithmetic  go to state 54
+    exprnew     go to state 94
+    arithmetic  go to state 55
 
 
 State 72
 
-   43 arithmetic: exprnew SUB . exprnew
+   42 arithmetic: exprnew SUB . exprnew
 
-    NUMBER      shift, and go to state 50
-    IDENTIFIER  shift, and go to state 51
-    ARRAY       shift, and go to state 52
+    NUMBER      shift, and go to state 51
+    IDENTIFIER  shift, and go to state 52
+    ARRAY       shift, and go to state 53
 
-    exprnew     go to state 94
-    arithmetic  go to state 54
+    exprnew     go to state 95
+    arithmetic  go to state 55
 
 
 State 73
 
-   45 arithmetic: exprnew MUL . exprnew
+   44 arithmetic: exprnew MUL . exprnew
 
-    NUMBER      shift, and go to state 50
-    IDENTIFIER  shift, and go to state 51
-    ARRAY       shift, and go to state 52
+    NUMBER      shift, and go to state 51
+    IDENTIFIER  shift, and go to state 52
+    ARRAY       shift, and go to state 53
 
-    exprnew     go to state 95
-    arithmetic  go to state 54
+    exprnew     go to state 96
+    arithmetic  go to state 55
 
 
 State 74
 
-   44 arithmetic: exprnew DIV . exprnew
+   43 arithmetic: exprnew DIV . exprnew
 
-    NUMBER      shift, and go to state 50
-    IDENTIFIER  shift, and go to state 51
-    ARRAY       shift, and go to state 52
+    NUMBER      shift, and go to state 51
+    IDENTIFIER  shift, and go to state 52
+    ARRAY       shift, and go to state 53
 
-    exprnew     go to state 96
-    arithmetic  go to state 54
+    exprnew     go to state 97
+    arithmetic  go to state 55
 
 
 State 75
 
-   26 things: NUMBER ',' things .
-
-    $default  reduce using rule 26 (things)
-
-
-State 76
-
-   25 things: IDENTIFIER ',' things .
+   25 things: NUMBER ',' things .
 
     $default  reduce using rule 25 (things)
 
 
+State 76
+
+   24 things: IDENTIFIER ',' things .
+
+    $default  reduce using rule 24 (things)
+
+
 State 77
 
-   27 things: ARRAY ',' things .
+   26 things: ARRAY ',' things .
 
-    $default  reduce using rule 27 (things)
+    $default  reduce using rule 26 (things)
 
 
 State 78
 
-   28 things: STRING ',' things .
+   27 things: STRING ',' things .
 
-    $default  reduce using rule 28 (things)
+    $default  reduce using rule 27 (things)
 
 
 State 79
 
-   34 thingsr: NUMBER ',' thingsr .
-
-    $default  reduce using rule 34 (thingsr)
-
-
-State 80
-
-   33 thingsr: IDENTIFIER ',' thingsr .
+   33 thingsr: NUMBER ',' thingsr .
 
     $default  reduce using rule 33 (thingsr)
 
 
+State 80
+
+   32 thingsr: IDENTIFIER ',' thingsr .
+
+    $default  reduce using rule 32 (thingsr)
+
+
 State 81
 
-   35 thingsr: ARRAY ',' thingsr .
+   34 thingsr: ARRAY ',' thingsr .
 
-    $default  reduce using rule 35 (thingsr)
+    $default  reduce using rule 34 (thingsr)
 
 
 State 82
 
-   11 code_blocks: code_blocks . code_block ';'
+   11 code_blocks: code_blocks . code_block
    15 code_block: IF conds '{' code_blocks . '}'
    16           | IF conds '{' code_blocks . '}' ELSE '{' code_blocks '}'
 
@@ -1007,97 +976,153 @@ State 82
     WHILE       shift, and go to state 23
     FOR         shift, and go to state 24
     LABEL       shift, and go to state 25
-    GOTO        shift, and go to state 26
-    '}'         shift, and go to state 97
+    '}'         shift, and go to state 98
 
-    code_block  go to state 28
-    print       go to state 29
-    read        go to state 30
-    expr        go to state 31
+    code_block  go to state 27
+    print       go to state 28
+    read        go to state 29
+    expr        go to state 30
 
 
 State 83
 
-   53 compare: EE .
-
-    $default  reduce using rule 53 (compare)
-
-
-State 84
-
-   49 compare: GT .
-
-    $default  reduce using rule 49 (compare)
-
-
-State 85
-
-   50 compare: LT .
-
-    $default  reduce using rule 50 (compare)
-
-
-State 86
-
-   51 compare: GTE .
-
-    $default  reduce using rule 51 (compare)
-
-
-State 87
-
-   52 compare: LTE .
+   52 compare: EE .
 
     $default  reduce using rule 52 (compare)
 
 
+State 84
+
+   48 compare: GT .
+
+    $default  reduce using rule 48 (compare)
+
+
+State 85
+
+   49 compare: LT .
+
+    $default  reduce using rule 49 (compare)
+
+
+State 86
+
+   50 compare: GTE .
+
+    $default  reduce using rule 50 (compare)
+
+
+State 87
+
+   51 compare: LTE .
+
+    $default  reduce using rule 51 (compare)
+
+
 State 88
 
-   48 cond: exprnew compare . exprnew
+   47 cond: exprnew compare . exprnew andor
 
-    NUMBER      shift, and go to state 50
-    IDENTIFIER  shift, and go to state 51
-    ARRAY       shift, and go to state 52
+    NUMBER      shift, and go to state 51
+    IDENTIFIER  shift, and go to state 52
+    ARRAY       shift, and go to state 53
 
-    exprnew     go to state 98
-    arithmetic  go to state 54
+    exprnew     go to state 99
+    arithmetic  go to state 55
 
 
 State 89
 
-   17 code_block: WHILE conds '{' code_block . '}'
+   11 code_blocks: code_blocks . code_block
+   17 code_block: WHILE conds '{' code_blocks . '}'
 
-    '}'  shift, and go to state 99
+    IDENTIFIER  shift, and go to state 18
+    ARRAY       shift, and go to state 19
+    PRINT       shift, and go to state 20
+    READ        shift, and go to state 21
+    IF          shift, and go to state 22
+    WHILE       shift, and go to state 23
+    FOR         shift, and go to state 24
+    LABEL       shift, and go to state 25
+    '}'         shift, and go to state 100
+
+    code_block  go to state 27
+    print       go to state 28
+    read        go to state 29
+    expr        go to state 30
 
 
 State 90
 
-   54 forloop: IDENTIFIER '=' NUMBER . ',' NUMBER inc
+   56 forloop: IDENTIFIER '=' NUMBER . ',' NUMBER inc
 
-    ','  shift, and go to state 100
+    ','  shift, and go to state 101
 
 
 State 91
 
-   18 code_block: FOR forloop '{' code_block . '}'
+   11 code_blocks: code_blocks . code_block
+   18 code_block: FOR forloop '{' code_blocks . '}'
 
-    '}'  shift, and go to state 101
+    IDENTIFIER  shift, and go to state 18
+    ARRAY       shift, and go to state 19
+    PRINT       shift, and go to state 20
+    READ        shift, and go to state 21
+    IF          shift, and go to state 22
+    WHILE       shift, and go to state 23
+    FOR         shift, and go to state 24
+    LABEL       shift, and go to state 25
+    '}'         shift, and go to state 102
+
+    code_block  go to state 27
+    print       go to state 28
+    read        go to state 29
+    expr        go to state 30
 
 
 State 92
 
-   57 call: IF cond .
+   60 call: IF . conds
 
-    $default  reduce using rule 57 (call)
+    $default  reduce using rule 45 (conds)
+
+    conds  go to state 103
 
 
 State 93
 
-   42 arithmetic: exprnew . ADD exprnew
-   42           | exprnew ADD exprnew .
-   43           | exprnew . SUB exprnew
-   44           | exprnew . DIV exprnew
-   45           | exprnew . MUL exprnew
+   19 code_block: LABEL GOTO IDENTIFIER call . ';'
+
+    ';'  shift, and go to state 104
+
+
+State 94
+
+   41 arithmetic: exprnew . ADD exprnew
+   41           | exprnew ADD exprnew .
+   42           | exprnew . SUB exprnew
+   43           | exprnew . DIV exprnew
+   44           | exprnew . MUL exprnew
+
+    ADD  shift, and go to state 71
+    SUB  shift, and go to state 72
+    MUL  shift, and go to state 73
+    DIV  shift, and go to state 74
+
+    ADD       [reduce using rule 41 (arithmetic)]
+    SUB       [reduce using rule 41 (arithmetic)]
+    MUL       [reduce using rule 41 (arithmetic)]
+    DIV       [reduce using rule 41 (arithmetic)]
+    $default  reduce using rule 41 (arithmetic)
+
+
+State 95
+
+   41 arithmetic: exprnew . ADD exprnew
+   42           | exprnew . SUB exprnew
+   42           | exprnew SUB exprnew .
+   43           | exprnew . DIV exprnew
+   44           | exprnew . MUL exprnew
 
     ADD  shift, and go to state 71
     SUB  shift, and go to state 72
@@ -1111,53 +1136,13 @@ State 93
     $default  reduce using rule 42 (arithmetic)
 
 
-State 94
-
-   42 arithmetic: exprnew . ADD exprnew
-   43           | exprnew . SUB exprnew
-   43           | exprnew SUB exprnew .
-   44           | exprnew . DIV exprnew
-   45           | exprnew . MUL exprnew
-
-    ADD  shift, and go to state 71
-    SUB  shift, and go to state 72
-    MUL  shift, and go to state 73
-    DIV  shift, and go to state 74
-
-    ADD       [reduce using rule 43 (arithmetic)]
-    SUB       [reduce using rule 43 (arithmetic)]
-    MUL       [reduce using rule 43 (arithmetic)]
-    DIV       [reduce using rule 43 (arithmetic)]
-    $default  reduce using rule 43 (arithmetic)
-
-
-State 95
-
-   42 arithmetic: exprnew . ADD exprnew
-   43           | exprnew . SUB exprnew
-   44           | exprnew . DIV exprnew
-   45           | exprnew . MUL exprnew
-   45           | exprnew MUL exprnew .
-
-    ADD  shift, and go to state 71
-    SUB  shift, and go to state 72
-    MUL  shift, and go to state 73
-    DIV  shift, and go to state 74
-
-    ADD       [reduce using rule 45 (arithmetic)]
-    SUB       [reduce using rule 45 (arithmetic)]
-    MUL       [reduce using rule 45 (arithmetic)]
-    DIV       [reduce using rule 45 (arithmetic)]
-    $default  reduce using rule 45 (arithmetic)
-
-
 State 96
 
-   42 arithmetic: exprnew . ADD exprnew
-   43           | exprnew . SUB exprnew
-   44           | exprnew . DIV exprnew
-   44           | exprnew DIV exprnew .
-   45           | exprnew . MUL exprnew
+   41 arithmetic: exprnew . ADD exprnew
+   42           | exprnew . SUB exprnew
+   43           | exprnew . DIV exprnew
+   44           | exprnew . MUL exprnew
+   44           | exprnew MUL exprnew .
 
     ADD  shift, and go to state 71
     SUB  shift, and go to state 72
@@ -1173,95 +1158,163 @@ State 96
 
 State 97
 
-   15 code_block: IF conds '{' code_blocks '}' .
-   16           | IF conds '{' code_blocks '}' . ELSE '{' code_blocks '}'
-
-    ELSE  shift, and go to state 102
-
-    $default  reduce using rule 15 (code_block)
-
-
-State 98
-
-   42 arithmetic: exprnew . ADD exprnew
-   43           | exprnew . SUB exprnew
-   44           | exprnew . DIV exprnew
-   45           | exprnew . MUL exprnew
-   48 cond: exprnew compare exprnew .
+   41 arithmetic: exprnew . ADD exprnew
+   42           | exprnew . SUB exprnew
+   43           | exprnew . DIV exprnew
+   43           | exprnew DIV exprnew .
+   44           | exprnew . MUL exprnew
 
     ADD  shift, and go to state 71
     SUB  shift, and go to state 72
     MUL  shift, and go to state 73
     DIV  shift, and go to state 74
 
-    $default  reduce using rule 48 (cond)
+    ADD       [reduce using rule 43 (arithmetic)]
+    SUB       [reduce using rule 43 (arithmetic)]
+    MUL       [reduce using rule 43 (arithmetic)]
+    DIV       [reduce using rule 43 (arithmetic)]
+    $default  reduce using rule 43 (arithmetic)
+
+
+State 98
+
+   15 code_block: IF conds '{' code_blocks '}' .
+   16           | IF conds '{' code_blocks '}' . ELSE '{' code_blocks '}'
+
+    ELSE  shift, and go to state 105
+
+    $default  reduce using rule 15 (code_block)
 
 
 State 99
 
-   17 code_block: WHILE conds '{' code_block '}' .
+   41 arithmetic: exprnew . ADD exprnew
+   42           | exprnew . SUB exprnew
+   43           | exprnew . DIV exprnew
+   44           | exprnew . MUL exprnew
+   47 cond: exprnew compare exprnew . andor
 
-    $default  reduce using rule 17 (code_block)
+    ADD  shift, and go to state 71
+    SUB  shift, and go to state 72
+    MUL  shift, and go to state 73
+    DIV  shift, and go to state 74
+    AND  shift, and go to state 106
+    OR   shift, and go to state 107
+
+    $default  reduce using rule 53 (andor)
+
+    andor  go to state 108
 
 
 State 100
 
-   54 forloop: IDENTIFIER '=' NUMBER ',' . NUMBER inc
+   17 code_block: WHILE conds '{' code_blocks '}' .
 
-    NUMBER  shift, and go to state 103
+    $default  reduce using rule 17 (code_block)
 
 
 State 101
 
-   18 code_block: FOR forloop '{' code_block '}' .
+   56 forloop: IDENTIFIER '=' NUMBER ',' . NUMBER inc
 
-    $default  reduce using rule 18 (code_block)
+    NUMBER  shift, and go to state 109
 
 
 State 102
 
-   16 code_block: IF conds '{' code_blocks '}' ELSE . '{' code_blocks '}'
+   18 code_block: FOR forloop '{' code_blocks '}' .
 
-    '{'  shift, and go to state 104
+    $default  reduce using rule 18 (code_block)
 
 
 State 103
 
-   54 forloop: IDENTIFIER '=' NUMBER ',' NUMBER . inc
+   46 conds: conds . cond
+   60 call: IF conds .
 
-    ','  shift, and go to state 105
+    NUMBER      shift, and go to state 51
+    IDENTIFIER  shift, and go to state 52
+    ARRAY       shift, and go to state 53
 
-    $default  reduce using rule 56 (inc)
+    $default  reduce using rule 60 (call)
 
-    inc  go to state 106
+    exprnew     go to state 65
+    arithmetic  go to state 55
+    cond        go to state 66
 
 
 State 104
+
+   19 code_block: LABEL GOTO IDENTIFIER call ';' .
+
+    $default  reduce using rule 19 (code_block)
+
+
+State 105
+
+   16 code_block: IF conds '{' code_blocks '}' ELSE . '{' code_blocks '}'
+
+    '{'  shift, and go to state 110
+
+
+State 106
+
+   54 andor: AND .
+
+    $default  reduce using rule 54 (andor)
+
+
+State 107
+
+   55 andor: OR .
+
+    $default  reduce using rule 55 (andor)
+
+
+State 108
+
+   47 cond: exprnew compare exprnew andor .
+
+    $default  reduce using rule 47 (cond)
+
+
+State 109
+
+   56 forloop: IDENTIFIER '=' NUMBER ',' NUMBER . inc
+
+    ','  shift, and go to state 111
+
+    $default  reduce using rule 57 (inc)
+
+    inc  go to state 112
+
+
+State 110
 
    16 code_block: IF conds '{' code_blocks '}' ELSE '{' . code_blocks '}'
 
     $default  reduce using rule 10 (code_blocks)
 
-    code_blocks  go to state 107
+    code_blocks  go to state 113
 
 
-State 105
+State 111
 
-   55 inc: ',' . NUMBER
+   58 inc: ',' . NUMBER
 
-    NUMBER  shift, and go to state 108
-
-
-State 106
-
-   54 forloop: IDENTIFIER '=' NUMBER ',' NUMBER inc .
-
-    $default  reduce using rule 54 (forloop)
+    NUMBER  shift, and go to state 114
 
 
-State 107
+State 112
 
-   11 code_blocks: code_blocks . code_block ';'
+   56 forloop: IDENTIFIER '=' NUMBER ',' NUMBER inc .
+
+    $default  reduce using rule 56 (forloop)
+
+
+State 113
+
+   11 code_blocks: code_blocks . code_block
    16 code_block: IF conds '{' code_blocks '}' ELSE '{' code_blocks . '}'
 
     IDENTIFIER  shift, and go to state 18
@@ -1272,23 +1325,22 @@ State 107
     WHILE       shift, and go to state 23
     FOR         shift, and go to state 24
     LABEL       shift, and go to state 25
-    GOTO        shift, and go to state 26
-    '}'         shift, and go to state 109
+    '}'         shift, and go to state 115
 
-    code_block  go to state 28
-    print       go to state 29
-    read        go to state 30
-    expr        go to state 31
-
-
-State 108
-
-   55 inc: ',' NUMBER .
-
-    $default  reduce using rule 55 (inc)
+    code_block  go to state 27
+    print       go to state 28
+    read        go to state 29
+    expr        go to state 30
 
 
-State 109
+State 114
+
+   58 inc: ',' NUMBER .
+
+    $default  reduce using rule 58 (inc)
+
+
+State 115
 
    16 code_block: IF conds '{' code_blocks '}' ELSE '{' code_blocks '}' .
 

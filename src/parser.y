@@ -42,7 +42,7 @@ int errors=0;
 %token <value>OR
 %token <value>WHILE
 %token <value>FOR
-%token LABEL
+%token <value>LABEL
 %token GOTO
 %left '+'
 %left '*'
@@ -63,6 +63,9 @@ int errors=0;
 %type <cond> cond
 %type <value> compare
 %type <value> andor
+%type <fors> forloop
+%type <number> inc
+%type <called> call
 %%
 
 program: DECLBLOCK '{' decl_blocks '}' CODEBLOCK '{' code_blocks '}' {
@@ -71,28 +74,28 @@ program: DECLBLOCK '{' decl_blocks '}' CODEBLOCK '{' code_blocks '}' {
 };
 
 decl_blocks: { $$ = new fieldDecls(); }
-           | decl_blocks decl_block ';' { $$->push_back($2); };
+          | decl_blocks decl_block ';' { $$->push_back($2); };
 
-decl_block:  | decl_block INT variables {$$=new fieldDecl($3);};
+decl_block:  {$$=NULL;}
+          | decl_block INT variables {$$=new fieldDecl($3);};
 
 variables: variable { $$=new Vars();$$->push_back($1);}
-           | variables ',' variable {$$->push_back($3);};
+          | variables ',' variable {$$->push_back($3);};
 
 variable:  IDENTIFIER {$$ = new Var(string("Identifier"),string($1));cout<<$$->name<<"\n";}
-           | ARRAY  {$$=new Var(string("Array"),string($1));cout<<$$->name<<"\n";};
+          | ARRAY  {$$=new Var(string("Array"),string($1));cout<<$$->name<<"\n";};
 
 code_blocks: { $$=new fieldCodes(); }
-            | code_blocks code_block ';' {$$->push_back($2);};
+          | code_blocks code_block {$$->push_back($2);};
 
-code_block:print
-		| read
-		| expr {$$=$1;}
+code_block:print ';'
+		| read ';'
+		| expr ';' {$$=$1;}
 		| IF conds '{' code_blocks '}'  {$$=new ifelsest($2,$4,NULL);}
 		| IF conds '{' code_blocks '}' ELSE '{' code_blocks '}'  {$$=new ifelsest($2,$4,$8);}
 		| WHILE conds '{' code_blocks '}' {$$=new whilest($2,$4);}
-		| FOR forloop '{' code_blocks '}'
-		| LABEL
-		| GOTO IDENTIFIER call
+		| FOR forloop '{' code_blocks '}'  {$$=new forst($2,$4);}
+		| LABEL GOTO IDENTIFIER call ';' {$$=new gotost($1,$4);}
 
 
 print: PRINT things
@@ -127,24 +130,24 @@ arithmetic: exprnew ADD exprnew {$$=new arithmeticst($1,string($2),$3);}
 		| exprnew MUL exprnew    {$$=new arithmeticst($1,string($2),$3);};
 
 conds: {$$=new condsst();}  | conds cond {$$->push_back($2);};
-cond: exprnew compare exprnew {$$=new condst($1,$2,$3);cout << $$->compopr << "\n";};
+cond: exprnew compare exprnew andor {$$=new condst($1,$2,$3,$4);};
 compare: GT {$$=$1;}
 	| LT  {$$=$1;}
 	| GTE  {$$=$1;}
 	| LTE  {$$=$1;}
 	| EE  {$$=$1;};
 
-/*
-andor:
+
+andor: {$$="";}
     | AND {$$=$1;}
 	  | OR {$$=$1;};
-*/
-forloop: IDENTIFIER '=' NUMBER ','  NUMBER inc
-inc: ','  NUMBER
-	|
 
-call: IF cond |
+forloop: IDENTIFIER '=' NUMBER ','  NUMBER inc {$$=new forloopinit($1,$3,$5,$6);};
+inc:      {$$=NULL;}
+    |','  NUMBER {$$=$2;};
 
+call: {$$=NULL;}
+    | IF conds  {$$=new callst($2);}
 %%
 
 

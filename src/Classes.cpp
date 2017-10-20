@@ -171,10 +171,11 @@ exprnewst::exprnewst(string str){
 exprnewst::exprnewst(int num){
 this->num=num;
 }
-condst::condst(class exprnewst* lhi, string compopr, class exprnewst*){
+condst::condst(class exprnewst* lhi, string compopr, class exprnewst* rhi, string multcond){
   this->lhi=lhi;
   this->compopr=compopr;
   this->rhi=rhi;
+  this->multcond=multcond;
 }
 ifelsest::ifelsest(class condsst* condition, class fieldCodes* ifblock, class fieldCodes* elseblock){
   this->condition=condition;
@@ -185,6 +186,23 @@ ifelsest::ifelsest(class condsst* condition, class fieldCodes* ifblock, class fi
 whilest::whilest(class condsst* condition, class fieldCodes* block){
   this->condition=condition;
   this->block=block;
+}
+forst::forst(class forloopinit* init, class fieldCodes* block){
+  this->init=init;
+  this->block=block;
+}
+forloopinit::forloopinit(char* iteratorname, int start, int finish, int inc){
+  this->iteratorname=iteratorname;
+  this->start=start;
+  this->finish=finish;
+  this->inc=inc;
+}
+gotost::gotost(string labelname, class callst* call){
+  this->labelname=labelname;
+  this->call=call;
+}
+callst::callst(class condsst* conds){
+  this->conds=conds;
 }
 
 

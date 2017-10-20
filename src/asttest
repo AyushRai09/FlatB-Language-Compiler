@@ -7,6 +7,9 @@ codeblock{
 			{
 			 f=f+g;
 			 f=2+2;
-			};
+			}
+			for i = 1, 100 {
+				sum = sum + data[i];
+		 	}
 
 }
