@@ -16,6 +16,7 @@ static LLVMContext &Context = getGlobalContext();
 static IRBuilder<> Builder(Context);
 static std::map<std::string, llvm::AllocaInst *> NamedValues;
 static FunctionPassManager *TheFPM;
+map <string,int> symbolTable;
 
 /* Usefull Functions */
 
@@ -144,7 +145,9 @@ this->cnt = 0;
 }
 
 Prog::Prog(class fieldDecls* fields, class fieldCodes* codes){
+  cout << fields << "\n";
   this->decls=fields;
+  cout << decls << "\n";
   this->codes=codes;
 }
 
@@ -242,4 +245,35 @@ void thingpsst::push_back(string item){
 }
 void thingrsst::push_back(string item){
   readList.push_back(item);
+}
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+void Prog::traverse(){
+ // cout << "hello" <<"\n";
+  // cout << decls << "\n";
+  // cout << "Hi" << "\n";
+  decls->traverse();
+//   for (auto it = symbolTable.begin(); it != symbolTable.end(); ++it) {
+//     // iterator is a pair of (key, value)
+//     cout << it->first <<"\n"; // key
+//     cout << it->second << "\n"; // value
+// }
+  codes->traverse();
+}
+
+void fieldDecls::traverse(){
+ cout << "hi"<<"\n";
+  int i;
+  for(i=0;i<decl_list.size();i++)
+    decl_list[i]->traverse();
+}
+void fieldDecl::traverse(){
+  int i;
+  for(i=0;i<var_list.size();i++)
+    var_list[i]->traverse();
+}
+void Var::traverse(){
+  symbolTable[name]=0;
+}
+
+void fieldCodes::traverse(){
 }

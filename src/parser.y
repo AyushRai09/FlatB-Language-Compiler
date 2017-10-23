@@ -96,14 +96,17 @@ program: DECLBLOCK '{' decl_blocks '}' CODEBLOCK '{' code_blocks '}' {
   start=$$;
 };
 
-decl_blocks: { $$ = new fieldDecls(); }
+decl_blocks:{ $$ = new fieldDecls();}
           | decl_blocks decl_block ';' { $$->push_back($2); };
 
-decl_block:  {$$=NULL;}
-          | decl_block INT variables {$$=new fieldDecl($3);};
+decl_block: INT variables {$$=new fieldDecl($2);
+                          for(int i=0;i<$$->var_list.size();i++)
+                          cout << $$->var_list[i]->name;     };
 
 variables: variable { $$=new Vars();$$->push_back($1);}
-          | variables ',' variable {$$->push_back($3);};
+          | variables ',' variable {
+            $$->push_back($3);
+          };
 
 variable:  IDENTIFIER {$$ = new Var(string("Identifier"),string($1));}
           | ARRAY  {$$=new Var(string("Array"),string($1));};
@@ -182,9 +185,10 @@ int main(int argc, char *argv[])
 		fprintf(stderr, "Correct usage: bcc filename\n");
 	}
 
-	yyin = fopen(argv[1], "r");
 
+	yyin = fopen(argv[1], "r");
 	yyparse();
+  start->traverse();
 	if(!flag)
 		printf("Successfully parsed without any errors\n");
 }

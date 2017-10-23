@@ -80,7 +80,7 @@ class astNode{
 
 
 class Var:public astNode{
-private:
+public:
 	string declType;
 	string name;
 public:
@@ -102,7 +102,7 @@ public:
 };
 
 class fieldDecl:public astNode{
-private:
+public:
 	string dataType;
 	vector<class Var*> var_list;
 public:
@@ -120,7 +120,6 @@ public:
 	fieldDecls();
 	void push_back(class fieldDecl*);
 	void traverse();
-	Value* codegen();
 };
 
 
@@ -139,13 +138,12 @@ public:
 };
 
 class Prog:public astNode{
-private:
+public:
 	class fieldDecls* decls;
 	class fieldCodes* codes;
 public:
 	Prog(class fieldDecls*, class fieldCodes*);
 	void traverse();
-	void generateCode();
 };
 
 class expr:public fieldCode{

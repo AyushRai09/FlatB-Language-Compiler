@@ -1,8 +1,6 @@
 declblock{
-	int x;
-	int brr[222];
+	int x,y;
 }
 codeblock{
-			a=z;
-			print a,b;
+
 }
