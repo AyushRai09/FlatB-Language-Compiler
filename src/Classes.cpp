@@ -17,7 +17,8 @@ static IRBuilder<> Builder(Context);
 static std::map<std::string, llvm::AllocaInst *> NamedValues;
 static FunctionPassManager *TheFPM;
 map <string,int> symbolTable;
-
+int st,en,in;
+string itname;
 /* Usefull Functions */
 
 static AllocaInst *CreateEntryBlockAlloca(Function *TheFunction, const std::string &VarName, string type) {
@@ -86,14 +87,11 @@ else if (opr.compare("=") == 0){
 string replace_newline(string str){
 size_t index = 0;
 string search="\\n";
-//  cout << "Called replace for " << str << endl;
 while (true) {
   /* Locate the substring to replace. */
   index = str.find(search, index);
   if (index == std::string::npos) break;
 
-  /* Make the replacement. */
-//  cout << "Replaced\n";
   str.erase( index, search.length() );
   str.insert( index, "\n" );
 
@@ -121,7 +119,7 @@ for(int i = 0; i < tabs_needed; i++){
 Var::Var(string declType, string name){
 
 string strtemp="";
-// cout << declType << "\n";
+
 if(declType=="Array")
 {
   for(int i=0;name[i]!='[' && name[i]!=0;i++)
@@ -149,7 +147,6 @@ Prog::Prog(class fieldDecls* fields, class fieldCodes* codes){
 }
 
 arithmeticst::arithmeticst(class exprnewst* lho, string op, class exprnewst* rho){
-  // cout << op <<"\n";
   this->lho=lho;
   this->op=op;
   this->rho=rho;
@@ -160,7 +157,7 @@ expr::expr(string str,class exprnewst* exprnew){
 }
 exprnewst::exprnewst(class arithmeticst* arthm){
   this->arthm=arthm;
-  this->flag=1;
+  this->typeExprflag=1;
 }
 exprnewst::exprnewst(string str){
   string temp="";
@@ -168,11 +165,11 @@ exprnewst::exprnewst(string str){
     temp+=str[i];
   str=temp;
   this->str=str;
-  this->flag=2;
+  this->typeExprflag=2;
 }
 exprnewst::exprnewst(int num){
 this->num=num;
-this->flag=3;
+this->typeExprflag=3;
 }
 condst::condst(class exprnewst* lhi, string compopr, class exprnewst* rhi){
   this->lhi=lhi;
@@ -247,9 +244,6 @@ void thingrsst::push_back(string item){
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////
 void Prog::traverse(){
- // cout << "hello" <<"\n";
-  // cout << decls << "\n";
-  // cout << "Hi" << "\n";
   decls->traverse();
   codes->traverse();
     for (auto it = symbolTable.begin(); it != symbolTable.end(); ++it) {
@@ -283,13 +277,13 @@ void expr::traverse(){
   symbolTable[lhs]=rhs->trav();
 }
 int exprnewst::trav(){
-  if(flag==1) //flag==1 means that the argument is of type class arithmeticst*
+  if(typeExprflag==1) //typeExprflag==1 means that the argument is of type class arithmeticst*
   {
     return arthm->trav();
   }
-  else if(flag==2)  //flag==2 means that the argument is of type string
+  else if(typeExprflag==2)  //typeExprflag==2 means that the argument is of type string
     return symbolTable[str];
-  else if(flag==3) //flag==3 means that the argument is of int
+  else if(typeExprflag==3) //typeExprflag==3 means that the argument is of int
     return num;
 }
 int arithmeticst::trav(){
@@ -305,27 +299,35 @@ int arithmeticst::trav(){
     return lhv/rhv;
  }
 void ifelsest::traverse(){
+
+  int flg=0;
+  if(elseblock!=NULL)
+    flg=1;
   int condFlag=condition->trav();
   if(condFlag)
     ifblock->traverse();
-  else
+  if(flg==1)
     elseblock->traverse();
 }
 
 int condsst::trav(){
 
-  int i,condFlag=1,temp=1;
-  for(i=0;i<condlist.size();i++)
+  int i=0,condFlag=1,temp=1;
+  for(i=condlist.size()-1;i>=0;i--)
   {
     if(temp==1)//and
       condFlag=condFlag && condlist[i].first->trav();
     if(temp==2)//or
       condFlag=condFlag || condlist[i].first->trav();
+
     if(condlist[i].second=="and")
-        temp=1;
-    else
+          temp=1;
+    else if(condlist[i].second=="or")
         temp=2;
+    else if(condlist[i].second=="")
+        temp=3;
   }
+
   return condFlag;
 }
 
@@ -356,6 +358,27 @@ void whilest::traverse(){
   }
 }
 
-// void forst::traverse(){
-//
-// }
+void forst::traverse(){
+  init->trav();
+  int i;
+  symbolTable[itname]=st;
+  for(i=st;i<=en;i=i+in)
+  {
+    block->traverse();
+    symbolTable[itname]+=in;
+  }
+}
+int forloopinit::trav(){
+  int i;char* out;
+  for(i=0;iteratorname[i]!=0;i++){}
+
+  out=(char*)malloc(sizeof(char)*i);
+  for(i=0;iteratorname[i]!=0;i++)
+    out[i]=iteratorname[i];
+  string str(out);
+  string itname=out;
+  st=start;
+  en=finish;
+  in=inc;
+  return 0;
+}

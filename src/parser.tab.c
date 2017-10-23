@@ -1640,7 +1640,7 @@ yyreduce:
 
   case 53:
 #line 168 "parser.y" /* yacc.c:1646  */
-    {(yyval.number)=NULL;}
+    {(yyval.number)=0;}
 #line 1645 "parser.tab.c" /* yacc.c:1646  */
     break;
 

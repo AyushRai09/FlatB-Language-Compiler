@@ -176,7 +176,7 @@ public:
 	class arithmeticst* arthm;
 	string str;
 	int num;
-	int flag;
+	int typeExprflag;
 public:
 	exprnewst(class arithmeticst*);
 	exprnewst(string);
@@ -233,7 +233,7 @@ public:
 	class fieldCodes* block;
 public:
 	forst(class forloopinit*, class fieldCodes*);
-	void traverse(){};
+	void traverse();
 	int trav(){};
 };
 
@@ -244,7 +244,7 @@ public:
 public:
 	forloopinit(char*,int,int,int);
 	void traverse(){};
-	int trav(){};
+	int trav();
 };
 
 class gotost:public fieldCode{

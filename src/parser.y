@@ -165,7 +165,7 @@ andor: {$$="";}
 	  | OR {$$=$1;};
 
 forloop: IDENTIFIER '=' NUMBER ','  NUMBER inc {$$=new forloopinit($1,$3,$5,$6);};
-inc:      {$$=NULL;}
+inc:      {$$=0;}
     |','  NUMBER {$$=$2;};
 
 call: {$$=NULL;}
