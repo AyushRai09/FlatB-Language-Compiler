@@ -90,7 +90,7 @@ public:
 };
 
 class Vars:public astNode{
-private:
+public:
 	vector<class Var*> vars_list;
 	int cnt;
 public:
@@ -113,7 +113,7 @@ public:
 };
 
 class fieldDecls:public astNode{
-private:
+public:
 	vector<class fieldDecl*> decl_list;
 	int cnt;
 public:
@@ -125,10 +125,15 @@ public:
 
 
 class fieldCode:public astNode{
+public:
+	virtual void traverse(){}
+	virtual int trav(){}
+	// virtual void traverse(){}
+	// virtual int traverse(){}
 };
 
 class fieldCodes:public astNode{
-private:
+public:
 	vector<class fieldCode* > fieldcodes;
 	int cnt;
 public:
@@ -147,126 +152,136 @@ public:
 };
 
 class expr:public fieldCode{
-private:
+public:
 	string lhs;
 	class exprnewst* rhs;
 public:
-	expr(string,class exprnewst*);
+	expr(string, class exprnewst*);
 	void traverse();
 };
 
 
 class arithmeticst:public fieldCode{
-private:
+public:
 	string op;
 	class exprnewst* lho;
 	class exprnewst* rho;
 public:
 	arithmeticst(class exprnewst*,string, class exprnewst*);
-	void traverse();
+	int trav();
 };
 
 class exprnewst:public fieldCode{
-private:
+public:
 	class arithmeticst* arthm;
 	string str;
 	int num;
+	int flag;
 public:
 	exprnewst(class arithmeticst*);
 	exprnewst(string);
 	exprnewst(int);
-	void traverse();
+	int trav();
 };
 
 class condsst:public fieldCode{
-private:
+public:
 	vector<class condst*> condlist;
 public:
 	condsst(){};
 	void push_back(class condst*);
 	vector<class condst*> getCondList();
-	void traverse();
+	void traverse(){};
+	int trav(){};
 };
 
 class condst:public fieldCode{
-private:
+public:
 	class exprnewst* lhi;
 	class exprnewst* rhi;
 	string compopr, multcond;
 public:
 	condst(class exprnewst*, string, class exprnewst*, string);
-	void traverse();
+	void traverse(){};
+	int trav(){};
 };
 
 class ifelsest:public fieldCode{
-private:
+public:
 	class condsst* condition;
 	class fieldCodes* ifblock;
 	class fieldCodes* elseblock;
 public:
 	ifelsest(class condsst*,class fieldCodes*, class fieldCodes*);
-	void traverse();
+	void traverse(){};
+	int trav(){};
 };
 
 class whilest:public fieldCode{
-private:
+public:
 	class condsst* condition;
 	class fieldCodes* block;
 public:
 	whilest(class condsst*, class fieldCodes*);
-	void traverse();
+	void traverse(){};
+	int trav(){};
 };
 
 class forst:public fieldCode{
-private:
+public:
 	class forloopinit* init;
 	class fieldCodes* block;
 public:
 	forst(class forloopinit*, class fieldCodes*);
-	void traverse();
-
+	void traverse(){};
+	int trav(){};
 };
 
 class forloopinit:public fieldCode{
-private:
+public:
 	char * iteratorname;
 	int start,finish,inc;
 public:
 	forloopinit(char*,int,int,int);
-	void traverse();
+	void traverse(){};
+	int trav(){};
 };
 
 class gotost:public fieldCode{
-private:
+public:
 	string labelname;
 	class callst* call;
 public:
 	gotost(string,class callst*);
-	void traverse();
+	void traverse(){};
+	int trav(){};
 };
 
 class callst:public fieldCode{
-private:
+public:
 	class condsst* conds;
 public:
 	callst(class condsst*);
-	void traverse();
+	void traverse(){};
+	int trav(){};
 };
 
 class thingpsst:public fieldCode{
-private:
+public:
 	vector<string> printList;
 public:
 	thingpsst(){}
-	void traverse();
+	void traverse(){};
+	int trav(){};
 	void push_back(string);
 };
 
 class thingrsst:public fieldCode{
-private:
+public:
 	vector<string> readList;
 public:
 	thingrsst(){}
-	void traverse();
+	void traverse(){};
+	int trav(){};
 	void push_back(string);
 };

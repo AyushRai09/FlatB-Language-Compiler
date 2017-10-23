@@ -163,6 +163,7 @@ expr::expr(string str,class exprnewst* exprnew){
 }
 exprnewst::exprnewst(class arithmeticst* arthm){
   this->arthm=arthm;
+  this->flag=1;
 }
 exprnewst::exprnewst(string str){
   string temp="";
@@ -170,9 +171,11 @@ exprnewst::exprnewst(string str){
     temp+=str[i];
   str=temp;
   this->str=str;
+  this->flag=2;
 }
 exprnewst::exprnewst(int num){
 this->num=num;
+this->flag=3;
 }
 condst::condst(class exprnewst* lhi, string compopr, class exprnewst* rhi, string multcond){
   this->lhi=lhi;
@@ -252,16 +255,16 @@ void Prog::traverse(){
   // cout << decls << "\n";
   // cout << "Hi" << "\n";
   decls->traverse();
-//   for (auto it = symbolTable.begin(); it != symbolTable.end(); ++it) {
-//     // iterator is a pair of (key, value)
-//     cout << it->first <<"\n"; // key
-//     cout << it->second << "\n"; // value
-// }
   codes->traverse();
+    for (auto it = symbolTable.begin(); it != symbolTable.end(); ++it) {
+      // iterator is a pair of (key, value)
+      cout << it->first <<"\n"; // key
+      cout << it->second << "\n"; // value
+  }
 }
 
 void fieldDecls::traverse(){
- cout << "hi"<<"\n";
+
   int i;
   for(i=0;i<decl_list.size();i++)
     decl_list[i]->traverse();
@@ -276,4 +279,39 @@ void Var::traverse(){
 }
 
 void fieldCodes::traverse(){
+  int i;
+  cout << "hello"<< "\n";
+  for(i=0;i<fieldcodes.size();i++)
+    fieldcodes[i]->traverse();
 }
+void expr::traverse(){
+  symbolTable[lhs]=rhs->trav();
+}
+int exprnewst::trav(){
+  if(flag==1) //flag==1 means that the argument is of type class arithmeticst*
+  {
+    return arthm->trav();
+  }
+  else if(flag==2)  //flag==2 means that the argument is of type string
+    return symbolTable[str];
+  else if(flag==3) //flag==3 means that the argument is of int
+    return num;
+}
+int arithmeticst::trav(){
+  int lhv=lho->trav();
+  int rhv=rho->trav();
+  if(op=="+")
+    return lhv+rhv;
+  else if(op=="-")
+    return lhv-rhv;
+  else if(op=="*")
+    return lhv*rhv;
+  else if(op=="/")
+    return lhv/rhv;
+ }
+// void condsst::traverse(){
+//   int i,condFlag=0;
+//   for(i=0;i<condlist.size();i++)
+//     condFlag=condlist[i]->traverse
+//
+// }
