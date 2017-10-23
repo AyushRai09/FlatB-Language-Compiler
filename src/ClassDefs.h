@@ -186,24 +186,24 @@ public:
 
 class condsst:public fieldCode{
 public:
-	vector<class condst*> condlist;
+	vector < pair <class condst*, string> > condlist;
 public:
 	condsst(){};
-	void push_back(class condst*);
+	void push_back(class condst*,string);
 	vector<class condst*> getCondList();
 	void traverse(){};
-	int trav(){};
+	int trav();
 };
 
 class condst:public fieldCode{
 public:
 	class exprnewst* lhi;
 	class exprnewst* rhi;
-	string compopr, multcond;
+	string compopr;
 public:
-	condst(class exprnewst*, string, class exprnewst*, string);
+	condst(class exprnewst*, string, class exprnewst*);
 	void traverse(){};
-	int trav(){};
+	int trav();
 };
 
 class ifelsest:public fieldCode{
@@ -213,7 +213,7 @@ public:
 	class fieldCodes* elseblock;
 public:
 	ifelsest(class condsst*,class fieldCodes*, class fieldCodes*);
-	void traverse(){};
+	void traverse();
 	int trav(){};
 };
 
@@ -223,7 +223,7 @@ public:
 	class fieldCodes* block;
 public:
 	whilest(class condsst*, class fieldCodes*);
-	void traverse(){};
+	void traverse();
 	int trav(){};
 };
 

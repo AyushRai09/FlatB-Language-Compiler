@@ -151,8 +151,8 @@ arithmetic: exprnew ADD exprnew {$$=new arithmeticst($1,string($2),$3);}
 		| exprnew DIV exprnew   {$$=new arithmeticst($1,string($2),$3);}
 		| exprnew MUL exprnew    {$$=new arithmeticst($1,string($2),$3);};
 
-conds: {$$=new condsst();}  | conds cond {$$->push_back($2);};
-cond: exprnew compare exprnew andor {$$=new condst($1,$2,$3,$4);};
+conds: {$$=new condsst();}  | conds andor cond {$$->push_back($3,$2);};
+cond: exprnew compare exprnew {$$=new condst($1,$2,$3);};
 compare: GT {$$=$1;}
 	| LT  {$$=$1;}
 	| GTE  {$$=$1;}

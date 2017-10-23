@@ -121,7 +121,6 @@ for(int i = 0; i < tabs_needed; i++){
 Var::Var(string declType, string name){
 
 string strtemp="";
-cout << name << "\n";
 // cout << declType << "\n";
 if(declType=="Array")
 {
@@ -145,9 +144,7 @@ this->cnt = 0;
 }
 
 Prog::Prog(class fieldDecls* fields, class fieldCodes* codes){
-  cout << fields << "\n";
   this->decls=fields;
-  cout << decls << "\n";
   this->codes=codes;
 }
 
@@ -177,11 +174,10 @@ exprnewst::exprnewst(int num){
 this->num=num;
 this->flag=3;
 }
-condst::condst(class exprnewst* lhi, string compopr, class exprnewst* rhi, string multcond){
+condst::condst(class exprnewst* lhi, string compopr, class exprnewst* rhi){
   this->lhi=lhi;
   this->compopr=compopr;
   this->rhi=rhi;
-  this->multcond=multcond;
 }
 ifelsest::ifelsest(class condsst* condition, class fieldCodes* ifblock, class fieldCodes* elseblock){
   this->condition=condition;
@@ -237,11 +233,11 @@ void fieldCodes::push_back(class fieldCode*var){
   fieldcodes.push_back(var);
   cnt++;
 }
-vector<class condst*> condsst::getCondList(){
-  return condlist;
-}
-void condsst::push_back(class condst* cond){
-  condlist.push_back(cond);
+// vector<class condst*> condsst::getCondList(){
+//   return condlist;
+// }
+void condsst::push_back(class condst* cond, string str){
+  condlist.push_back(make_pair(cond,str));
 }
 void thingpsst::push_back(string item){
   printList.push_back(item);
@@ -280,7 +276,6 @@ void Var::traverse(){
 
 void fieldCodes::traverse(){
   int i;
-  cout << "hello"<< "\n";
   for(i=0;i<fieldcodes.size();i++)
     fieldcodes[i]->traverse();
 }
@@ -309,9 +304,58 @@ int arithmeticst::trav(){
   else if(op=="/")
     return lhv/rhv;
  }
-// void condsst::traverse(){
-//   int i,condFlag=0;
-//   for(i=0;i<condlist.size();i++)
-//     condFlag=condlist[i]->traverse
+void ifelsest::traverse(){
+  int condFlag=condition->trav();
+  if(condFlag)
+    ifblock->traverse();
+  else
+    elseblock->traverse();
+}
+
+int condsst::trav(){
+
+  int i,condFlag=1,temp=1;
+  for(i=0;i<condlist.size();i++)
+  {
+    if(temp==1)//and
+      condFlag=condFlag && condlist[i].first->trav();
+    if(temp==2)//or
+      condFlag=condFlag || condlist[i].first->trav();
+    if(condlist[i].second=="and")
+        temp=1;
+    else
+        temp=2;
+  }
+  return condFlag;
+}
+
+int condst::trav(){
+  int l=lhi->trav();
+  int r=rhi->trav();
+  if(compopr==">")
+    return l > r;
+  else if(compopr=="<")
+    return l < r;
+  else if(compopr=="==")
+    return l==r;
+  else if(compopr==">=")
+    return l>=r;
+  else if(compopr=="<=")
+    return l<=r;
+}
+
+void whilest::traverse(){
+  int condFlag;
+  while(1)
+  {
+    condFlag=condition->trav();
+    if(condFlag==0)
+      break;
+    else
+      block->traverse();
+  }
+}
+
+// void forst::traverse(){
 //
 // }
