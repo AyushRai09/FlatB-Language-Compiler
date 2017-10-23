@@ -121,7 +121,7 @@ code_block:PRINT thingps ';' {$$=$2;}
 		| IF conds '{' code_blocks '}' ELSE '{' code_blocks '}'  {$$=new ifelsest($2,$4,$8);}
 		| WHILE conds '{' code_blocks '}' {$$=new whilest($2,$4);}
 		| FOR forloop '{' code_blocks '}'  {$$=new forst($2,$4);}
-		| LABEL GOTO IDENTIFIER call ';' {$$=new gotost($1,$4);}
+    | LABEL code_blocks GOTO IDENTIFIER call ';' {$$=new gotost($2,$4,$5);}
 
 
 thingps:thingp {$$=new thingpsst();}
@@ -188,7 +188,9 @@ int main(int argc, char *argv[])
 
 	yyin = fopen(argv[1], "r");
 	yyparse();
-  start->traverse();
 	if(!flag)
+  {
 		printf("Successfully parsed without any errors\n");
+    start->traverse();
+  }
 }

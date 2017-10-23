@@ -251,9 +251,11 @@ class gotost:public fieldCode{
 public:
 	string labelname;
 	class callst* call;
+	class fieldCodes* codes;
+
 public:
-	gotost(string,class callst*);
-	void traverse(){};
+	gotost(class fieldCodes*,string,class callst*);
+	void traverse();
 	int trav(){};
 };
 
@@ -263,7 +265,7 @@ public:
 public:
 	callst(class condsst*);
 	void traverse(){};
-	int trav(){};
+	int trav();
 };
 
 class thingpsst:public fieldCode{

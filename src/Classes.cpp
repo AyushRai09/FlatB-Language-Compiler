@@ -19,6 +19,9 @@ static FunctionPassManager *TheFPM;
 map <string,int> symbolTable;
 int st,en,in;
 string itname;
+map<string,pair<class fieldCodes*,class callst*> >gotomap;
+// vector< pair< string, pair<class fieldCodes*,class callst*> > > gotovec;
+// vector< pair < pair <string,class fieldCodes*>, class callst* > > gotovec;
 /* Usefull Functions */
 
 static AllocaInst *CreateEntryBlockAlloca(Function *TheFunction, const std::string &VarName, string type) {
@@ -196,9 +199,13 @@ forloopinit::forloopinit(char* iteratorname, int start, int finish, int inc){
   this->finish=finish;
   this->inc=inc;
 }
-gotost::gotost(string labelname, class callst* call){
+gotost::gotost(class fieldCodes* codes, string labelname, class callst* call){
+  this->codes=codes;
   this->labelname=labelname;
   this->call=call;
+  gotomap[labelname]=make_pair(codes,call);
+  // gotovec.push_back(make_pair(labelname,make_pair(codes,call)));
+  // gotovec.push_back(make_pair(make_pair(labelname, codes),call));
 }
 callst::callst(class condsst* conds){
   this->conds=conds;
@@ -381,4 +388,13 @@ int forloopinit::trav(){
   en=finish;
   in=inc;
   return 0;
+}
+void gotost::traverse(){
+
+  while(gotomap[labelname].second->trav())
+    gotomap[labelname].first->traverse();
+
+}
+int callst::trav(){
+  return conds->trav();
 }
