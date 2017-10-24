@@ -273,7 +273,7 @@ public:
 	vector<string> printList;
 public:
 	thingpsst(){}
-	void traverse(){};
+	void traverse();
 	int trav(){};
 	void push_back(string);
 };

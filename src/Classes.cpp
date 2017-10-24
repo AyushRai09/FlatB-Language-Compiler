@@ -20,6 +20,7 @@ map <string,int> symbolTable;
 int st,en,in;
 string itname;
 map<string,pair<class fieldCodes*,class callst*> >gotomap;
+map<string,vector < int > >arrmap;
 // vector< pair< string, pair<class fieldCodes*,class callst*> > > gotovec;
 // vector< pair < pair <string,class fieldCodes*>, class callst* > > gotovec;
 /* Usefull Functions */
@@ -122,13 +123,24 @@ for(int i = 0; i < tabs_needed; i++){
 Var::Var(string declType, string name){
 
 string strtemp="";
-
+string sz;
+int len1;
 if(declType=="Array")
 {
-  for(int i=0;name[i]!='[' && name[i]!=0;i++)
+  int osb=name.find('[');
+  int i;
+  for(i=0;name[i]!='[' && name[i]!=0;i++)
     strtemp+=name[i];
   name=strtemp;
+  for(i=osb+1;name[i]!=']';i++)
+    sz+=name[i];
+  // cout << "osb:"<< osb << " " << "sz:" << sz << "\n";
+  len1=atoi(sz.c_str());
+  for(i=0;i<len1;i++)
+    arrmap[strtemp].push_back(0);
+  //cout << strtemp << " " << len1 << "\n";
 }
+
 this->name = name;
 this->declType = declType;
 }
@@ -253,11 +265,11 @@ void thingrsst::push_back(string item){
 void Prog::traverse(){
   decls->traverse();
   codes->traverse();
-    for (auto it = symbolTable.begin(); it != symbolTable.end(); ++it) {
-      // iterator is a pair of (key, value)
-      cout << it->first <<"\n"; // key
-      cout << it->second << "\n"; // value
-  }
+  //   for (auto it = symbolTable.begin(); it != symbolTable.end(); ++it) {
+  //     // iterator is a pair of (key, value)
+  //     cout << it->first <<"\n"; // key
+  //     cout << it->second << "\n"; // value
+  // }
 }
 
 void fieldDecls::traverse(){
@@ -281,15 +293,43 @@ void fieldCodes::traverse(){
     fieldcodes[i]->traverse();
 }
 void expr::traverse(){
-  symbolTable[lhs]=rhs->trav();
+  if(lhs.find("[")!=-1)
+    {
+
+      int osb=lhs.find("["); string ind; int index;string name;
+      for(int i=0;lhs[i]!='[';i++)
+        name+=lhs[i];
+      for(int i=osb+1;lhs[i]!=']';i++)
+        ind+=lhs[i];
+      index=atoi(ind.c_str());
+    //  cout << name << " " << index << "\n";
+      arrmap[name][index]=rhs->trav();
+      //cout << arrmap[name][index] << "\n";
+    }
+  else
+    {
+      cout << symbolTable[lhs] << "\n";
+      symbolTable[lhs]=rhs->trav();
+    }
 }
 int exprnewst::trav(){
   if(typeExprflag==1) //typeExprflag==1 means that the argument is of type class arithmeticst*
-  {
     return arthm->trav();
-  }
   else if(typeExprflag==2)  //typeExprflag==2 means that the argument is of type string
-    return symbolTable[str];
+  {
+    if(str.find("[")!=-1)
+    {
+      int osb=str.find("["); string ind; int index;string name;
+        for(int i=0;str[i]!='[';i++)
+          name+=str[i];
+        for(int i=osb+1;str[i]!=']';i++)
+          ind+=str[i];
+        index=atoi(ind.c_str());
+        return arrmap[name][index];
+    }
+    else
+      return symbolTable[str];
+  }
   else if(typeExprflag==3) //typeExprflag==3 means that the argument is of int
     return num;
 }
@@ -397,4 +437,9 @@ void gotost::traverse(){
 }
 int callst::trav(){
   return conds->trav();
+}
+void thingpsst::traverse(){
+  int i;
+  for(i=0;i<printList.size();i++)
+    cout << symbolTable[printList[i]] << "\n";
 }

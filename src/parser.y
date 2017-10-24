@@ -99,9 +99,7 @@ program: DECLBLOCK '{' decl_blocks '}' CODEBLOCK '{' code_blocks '}' {
 decl_blocks:{ $$ = new fieldDecls();}
           | decl_blocks decl_block ';' { $$->push_back($2); };
 
-decl_block: INT variables {$$=new fieldDecl($2);
-                          for(int i=0;i<$$->var_list.size();i++)
-                          cout << $$->var_list[i]->name;     };
+decl_block: INT variables {$$=new fieldDecl($2);};
 
 variables: variable { $$=new Vars();$$->push_back($1);}
           | variables ',' variable {
@@ -124,7 +122,7 @@ code_block:PRINT thingps ';' {$$=$2;}
     | LABEL code_blocks GOTO IDENTIFIER call ';' {$$=new gotost($2,$4,$5);}
 
 
-thingps:thingp {$$=new thingpsst();}
+thingps:thingp {$$=new thingpsst();$$->push_back(string($1));}
       | thingps ',' thingp {$$->push_back(string($3));};
 thingp:  IDENTIFIER {$$=$1;}
 		| NUMBER        {$$=num2str($1);}

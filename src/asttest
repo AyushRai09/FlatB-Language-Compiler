@@ -1,11 +1,17 @@
 declblock{
-	int x,y,z,i;
+	int x,y,z,i,sum;
+	int arr[100];
 }
 codeblock{
-	x=20;
-	y=30;
-	z=x+y;
-	if 2 > 1 and 3>2 x<y{
-		x=x+2;
+	arr[0]=0;
+	arr[1]=1;
+	arr[2]=2;
+	arr[3]=3;
+	i=0;
+	sum=0;
+			while i<4 {
+		sum=sum+arr[i];
+		i=i+1;
 		}
-}
+	print sum;
+	}
