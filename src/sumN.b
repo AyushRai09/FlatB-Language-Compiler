@@ -5,20 +5,12 @@ declblock{
 
 codeblock{
 	for i = 1, 100 {
-		data[i] = i; 
-		if i > 2 {
-			read r;
-		}
-		else {
-			x=2;
-		}
+		data[i] = i;
 	}
-	
+
 	sum = 0;
-	for i = 1, 100 {
+	for i = 1,100 {
 		sum = sum + data[i];
  	}
-
-	print "Sum value: ", "aush", sdfdsf, sum;
+	print sum;
 }
-

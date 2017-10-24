@@ -3,15 +3,15 @@ declblock{
 	int arr[100];
 }
 codeblock{
-	arr[0]=0;
-	arr[1]=1;
-	arr[2]=2;
-	arr[3]=3;
+	i=0;j=1;k=2;
+
+	for i=1,100,1
+	{
+		arr[i]=i;
+	}
 	i=0;
-	sum=0;
-			while i<4 {
-		sum=sum+arr[i];
-		i=i+1;
-		}
+	for i=1,100,1 {
+	sum=sum+arr[i];
+	}
 	print sum;
 	}

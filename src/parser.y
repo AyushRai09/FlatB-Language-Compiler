@@ -101,8 +101,9 @@ decl_blocks:{ $$ = new fieldDecls();}
 
 decl_block: INT variables {$$=new fieldDecl($2);};
 
-variables: variable { $$=new Vars();$$->push_back($1);}
+variables: variable { $$=new Vars();if($1->declType=="Identifier")$$->push_back($1);}
           | variables ',' variable {
+          if($3->declType=="Identifier")
             $$->push_back($3);
           };
 
@@ -163,7 +164,7 @@ andor: {$$="";}
 	  | OR {$$=$1;};
 
 forloop: IDENTIFIER '=' NUMBER ','  NUMBER inc {$$=new forloopinit($1,$3,$5,$6);};
-inc:      {$$=0;}
+inc:      {$$=1;}
     |','  NUMBER {$$=$2;};
 
 call: {$$=NULL;}

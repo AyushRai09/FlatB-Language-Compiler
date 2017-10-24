@@ -176,9 +176,9 @@ exprnewst::exprnewst(class arithmeticst* arthm){
 }
 exprnewst::exprnewst(string str){
   string temp="";
-  for(int i=0;str[i]!='[' && str[i]!=0;i++)
-    temp+=str[i];
-  str=temp;
+  // for(int i=0;str[i]!='[' && str[i]!=0;i++)
+  //   temp+=str[i];
+  // str=temp;
   this->str=str;
   this->typeExprflag=2;
 }
@@ -302,13 +302,16 @@ void expr::traverse(){
       for(int i=osb+1;lhs[i]!=']';i++)
         ind+=lhs[i];
       index=atoi(ind.c_str());
-    //  cout << name << " " << index << "\n";
-      arrmap[name][index]=rhs->trav();
-      //cout << arrmap[name][index] << "\n";
+      if(to_string(index)!=ind)
+        arrmap[name][symbolTable[ind]]=rhs->trav();
+      else
+        arrmap[name][index]=rhs->trav();
+        // cout << to_string(index) << " " << ind << " " << "\n";
+        // cout << arrmap[name][symbolTable[ind]] << "\n";
     }
   else
     {
-      cout << symbolTable[lhs] << "\n";
+  //    cout << symbolTable[lhs] << "\n";
       symbolTable[lhs]=rhs->trav();
     }
 }
@@ -319,13 +322,18 @@ int exprnewst::trav(){
   {
     if(str.find("[")!=-1)
     {
+
       int osb=str.find("["); string ind; int index;string name;
         for(int i=0;str[i]!='[';i++)
           name+=str[i];
         for(int i=osb+1;str[i]!=']';i++)
           ind+=str[i];
         index=atoi(ind.c_str());
-        return arrmap[name][index];
+
+        if(to_string(index)!=ind){
+          return arrmap[name][symbolTable[ind]];}
+        else
+          return arrmap[name][index];
     }
     else
       return symbolTable[str];
@@ -409,6 +417,9 @@ void forst::traverse(){
   init->trav();
   int i;
   symbolTable[itname]=st;
+  // cout << "itname:" << itname << "\n";
+  //
+  // cout << "st:" << st << " " << "en:" << en << " " << "in:" << in << "\n";
   for(i=st;i<=en;i=i+in)
   {
     block->traverse();
@@ -422,8 +433,7 @@ int forloopinit::trav(){
   out=(char*)malloc(sizeof(char)*i);
   for(i=0;iteratorname[i]!=0;i++)
     out[i]=iteratorname[i];
-  string str(out);
-  string itname=out;
+  itname=string(out);
   st=start;
   en=finish;
   in=inc;
