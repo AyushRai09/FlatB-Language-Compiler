@@ -201,7 +201,7 @@ public:
 	vector<class condst*> getCondList();
 	void traverse(){};
 	int trav();
-	Value *codegen(){};
+	Value *codegen();
 };
 
 class condst:public fieldCode{
@@ -213,7 +213,7 @@ public:
 	condst(class exprnewst*, string, class exprnewst*);
 	void traverse(){};
 	int trav();
-	Value *codegen(){};
+	Value *codegen();
 };
 
 class ifelsest:public fieldCode{
@@ -225,7 +225,7 @@ public:
 	ifelsest(class condsst*,class fieldCodes*, class fieldCodes*);
 	void traverse();
 	int trav(){};
-	Value *codegen(){};
+	Value *codegen();
 };
 
 class whilest:public fieldCode{

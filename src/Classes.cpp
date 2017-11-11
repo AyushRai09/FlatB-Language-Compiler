@@ -460,6 +460,9 @@ void thingpsst::traverse(){
 Value* Prog::codegen(){
   Value *v;
   v=decls->codegen();
+  BasicBlock *BB = BasicBlock::Create(getGlobalContext(), "entry", F);
+  Builder.SetInsertPoint(BB);
+
   v=codes->codegen();
   return v;
 }
@@ -473,7 +476,7 @@ Value* fieldDecls::codegen(){
   int i;
   for(i=0;i<decl_list.size();i++)
     decl_list[i]->codegen();
-  Value* v = ConstantInt::get(getGlobalContext(), APInt(32,1));
+  Value* v = ConstantInt::get(getGlobalContext(), APInt(32,500));
   return v;
 }
 
@@ -490,17 +493,15 @@ Value* fieldDecl::codegen(){
       GlobalVariable* gv = new GlobalVariable(*TheModule, ptrTy ,false,GlobalValue::ExternalLinkage, 0, var->name);
     }
   }
-  Value* v = ConstantInt::get(getGlobalContext(), APInt(32,1));
+  Value* v = ConstantInt::get(getGlobalContext(), APInt(32,500));
   return v;
 }
 
 Value *fieldCodes::codegen(){
   int i;
-  BasicBlock *BB = BasicBlock::Create(getGlobalContext(), "entry", F);
-  Builder.SetInsertPoint(BB);
   for(i=0;i<fieldcodes.size();i++)
     fieldcodes[i]->codegen();
-  Value* v = ConstantInt::get(getGlobalContext(), APInt(32,1));
+  Value* v = ConstantInt::get(getGlobalContext(), APInt(32,500));
   return v;
 }
 
@@ -508,7 +509,7 @@ Value *expr::codegen(){
   Value *v= TheModule->getNamedGlobal(lhs);
   Value *rhseval=rhs->codegen();
   v=Builder.CreateLoad(v);
-  return Builder.CreateStore(rhseval,v);
+  return Builder.CreateStore(rhseval,TheModule->getNamedGlobal(lhs));
 }
 
 Value *exprnewst::codegen(){
@@ -527,6 +528,7 @@ Value *exprnewst::codegen(){
   else if(typeExprflag==3)
   {
     Value* v = ConstantInt::get(getGlobalContext(), APInt(32,num));
+    // cout << "dsfdsfa" << num << "\n";
     return v;
   }
 
@@ -545,5 +547,66 @@ Value *arithmeticst::codegen(){
   else if(op=="/")
     v=Builder.CreateUDiv(lhseval,rhseval,"divtmp");
   return v;
+}
 
+Value* ifelsest::codegen(){
+  Value* condeval=condition->codegen();
+  BasicBlock* ifblockeval=BasicBlock::Create(Context,"ifblock",F);
+  BasicBlock* elseblockeval=BasicBlock::Create(Context,"elseblock");
+  BasicBlock* mergeblockeval=BasicBlock::Create(Context,"ifcontinue");
+  Builder.CreateCondBr(condeval,ifblockeval,elseblockeval);
+
+  Builder.SetInsertPoint(ifblockeval);
+  Value* ifval = ifblock->codegen();
+  Builder.CreateBr(mergeblockeval);
+  // ifblockeval = Builder.GetInsertBlock();
+  F->getBasicBlockList().push_back(elseblockeval);
+
+  Builder.SetInsertPoint(elseblockeval);
+  Value *elseval;
+  if(elseblock!=NULL)
+  {
+    elseval= elseblock->codegen();
+  }
+  Builder.CreateBr(mergeblockeval);
+  // elseblockeval = Builder.GetInsertBlock();
+  F->getBasicBlockList().push_back(mergeblockeval);
+
+  Builder.SetInsertPoint(mergeblockeval);
+  // PHINode *Phi=Builder.CreatePHI(Type::getInt32Ty(getGlobalContext()),2,"iftmp");
+  // Phi->addIncoming(ifval,ifblockeval);
+  // Phi->addIncoming(elseval,elseblockeval);
+  Value *V = ConstantInt::get(getGlobalContext(), APInt(32,500));
+  return V;
+  // return Phi;
+}
+
+Value *condsst::codegen(){
+  int i;
+  for(i=0;i<condlist.size();i++)
+  {
+    return condlist[i].first->codegen();
+  }
+  Value *v =ConstantInt::get(getGlobalContext(), APInt(32,1));
+  return v;
+}
+
+Value *condst::codegen(){
+  Value * lhieval= lhi->codegen();
+  Value * rhieval= rhi->codegen();
+  Value *v;
+  if(compopr==">")
+    {
+      cout << "Hi ayush rai" << "\n";
+      v=Builder.CreateICmpUGT(lhieval,rhieval,"gtcomparetmp");
+    }
+  else if(compopr=="<")
+    v=Builder.CreateICmpULT(lhieval, rhieval,"ltcomparetmp");
+  else if(compopr==">=")
+    v=Builder.CreateICmpUGE(lhieval,rhieval,"gecomparetmp");
+  else if(compopr=="<=")
+    v=Builder.CreateICmpULE(lhieval,rhieval,"lecomparetmp");
+  else if(compopr=="==")
+    v=Builder.CreateICmpEQ(lhieval,rhieval,"compopromparetmp");
+  return v;
 }
