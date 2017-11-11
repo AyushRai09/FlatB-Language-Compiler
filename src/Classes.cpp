@@ -14,13 +14,15 @@ extern int errors;
 static Module *TheModule = new Module("Decaf compiler jit",llvm::getGlobalContext());
 static LLVMContext &Context = getGlobalContext();
 static IRBuilder<> Builder(Context);
-static std::map<std::string, llvm::AllocaInst *> NamedValues;
 static FunctionPassManager *TheFPM;
 map <string,int> symbolTable;
 int st,en,in;
 string itname;
 map<string,pair<class fieldCodes*,class callst*> >gotomap;
 map<string,vector < int > >arrmap;
+
+FunctionType *FT = llvm::FunctionType::get(Builder.getVoidTy(),false);
+Function *F = llvm::Function::Create(FT, Function::ExternalLinkage, "codeblock", TheModule);
 // vector< pair< string, pair<class fieldCodes*,class callst*> > > gotovec;
 // vector< pair < pair <string,class fieldCodes*>, class callst* > > gotovec;
 /* Usefull Functions */
@@ -119,7 +121,7 @@ for(int i = 0; i < tabs_needed; i++){
 // this->length = length;
 // }
 
-
+///////////////////////////***********Constructors****************////////////////////////////??????
 Var::Var(string declType, string name){
 
 string strtemp="";
@@ -223,7 +225,7 @@ callst::callst(class condsst* conds){
   this->conds=conds;
 }
 
-
+////////////////////////////////////*****************Class defined functions******************////////////////////////////////
 string Var::getName(){
   return name;
 }
@@ -261,7 +263,7 @@ void thingpsst::push_back(string item){
 void thingrsst::push_back(string item){
   readList.push_back(item);
 }
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////*****TRAVERSALS************/////////////////////////////////////////////////
 void Prog::traverse(){
   decls->traverse();
   codes->traverse();
@@ -452,4 +454,96 @@ void thingpsst::traverse(){
   int i;
   for(i=0;i<printList.size();i++)
     cout << symbolTable[printList[i]] << "\n";
+}
+
+//***************************Codegens***********************************//
+Value* Prog::codegen(){
+  Value *v;
+  v=decls->codegen();
+  v=codes->codegen();
+  return v;
+}
+
+void Prog::codeDump(){
+  cout << "Generating LLVM IR Code" << "\n";
+  TheModule->dump();
+}
+
+Value* fieldDecls::codegen(){
+  int i;
+  for(i=0;i<decl_list.size();i++)
+    decl_list[i]->codegen();
+  Value* v = ConstantInt::get(getGlobalContext(), APInt(32,1));
+  return v;
+}
+
+Value* fieldDecl::codegen(){
+  int i;
+  for(i=0;i<var_list.size();i++)
+  {
+    class Var* var=var_list[i];
+    llvm::Type *ty;
+    ty=Type::getInt32Ty(Context);
+    if(var->declType=="Identifier")
+    {
+      PointerType* ptrTy = PointerType::get(ty,0);
+      GlobalVariable* gv = new GlobalVariable(*TheModule, ptrTy ,false,GlobalValue::ExternalLinkage, 0, var->name);
+    }
+  }
+  Value* v = ConstantInt::get(getGlobalContext(), APInt(32,1));
+  return v;
+}
+
+Value *fieldCodes::codegen(){
+  int i;
+  BasicBlock *BB = BasicBlock::Create(getGlobalContext(), "entry", F);
+  Builder.SetInsertPoint(BB);
+  for(i=0;i<fieldcodes.size();i++)
+    fieldcodes[i]->codegen();
+  Value* v = ConstantInt::get(getGlobalContext(), APInt(32,1));
+  return v;
+}
+
+Value *expr::codegen(){
+  Value *v= TheModule->getNamedGlobal(lhs);
+  Value *rhseval=rhs->codegen();
+  v=Builder.CreateLoad(v);
+  return Builder.CreateStore(rhseval,v);
+}
+
+Value *exprnewst::codegen(){
+  if(typeExprflag==1)
+  {
+      Value *v= arthm->codegen();
+      return v;
+  }
+
+  else if(typeExprflag==2)
+  {
+    Value *v=TheModule->getNamedGlobal(str);
+    v=Builder.CreateLoad(v);
+    return v;
+  }
+  else if(typeExprflag==3)
+  {
+    Value* v = ConstantInt::get(getGlobalContext(), APInt(32,num));
+    return v;
+  }
+
+}
+
+Value *arithmeticst::codegen(){
+  Value *lhseval=lho->codegen();
+  Value *rhseval=rho->codegen();
+  Value *v;
+  if(op=="+")
+    v=Builder.CreateAdd(lhseval,rhseval,"addtmp");
+  else if(op=="-")
+    v=Builder.CreateSub(lhseval,rhseval,"subtmp");
+  else if(op=="*")
+    v=Builder.CreateMul(lhseval,rhseval,"multmp");
+  else if(op=="/")
+    v=Builder.CreateUDiv(lhseval,rhseval,"divtmp");
+  return v;
+
 }

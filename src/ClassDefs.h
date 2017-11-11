@@ -120,6 +120,7 @@ public:
 	fieldDecls();
 	void push_back(class fieldDecl*);
 	void traverse();
+	Value* codegen();
 };
 
 
@@ -128,6 +129,7 @@ class fieldCode:public astNode{
 public:
 	virtual void traverse(){}
 	virtual int trav(){}
+	virtual Value* codegen(){}
 	// virtual void traverse(){}
 	// virtual int traverse(){}
 };
@@ -140,6 +142,7 @@ public:
 	fieldCodes(){}
 	void push_back(class fieldCode *);
 	void traverse();
+	Value *codegen();
 };
 
 class Prog:public astNode{
@@ -149,6 +152,8 @@ public:
 public:
 	Prog(class fieldDecls*, class fieldCodes*);
 	void traverse();
+	Value* codegen();
+	void codeDump();
 };
 
 class expr:public fieldCode{
@@ -158,6 +163,7 @@ public:
 public:
 	expr(string, class exprnewst*);
 	void traverse();
+	Value * codegen();
 };
 
 
@@ -169,6 +175,7 @@ public:
 public:
 	arithmeticst(class exprnewst*,string, class exprnewst*);
 	int trav();
+	Value* codegen();
 };
 
 class exprnewst:public fieldCode{
@@ -182,6 +189,7 @@ public:
 	exprnewst(string);
 	exprnewst(int);
 	int trav();
+	Value * codegen();
 };
 
 class condsst:public fieldCode{
@@ -193,6 +201,7 @@ public:
 	vector<class condst*> getCondList();
 	void traverse(){};
 	int trav();
+	Value *codegen(){};
 };
 
 class condst:public fieldCode{
@@ -204,6 +213,7 @@ public:
 	condst(class exprnewst*, string, class exprnewst*);
 	void traverse(){};
 	int trav();
+	Value *codegen(){};
 };
 
 class ifelsest:public fieldCode{
@@ -215,6 +225,7 @@ public:
 	ifelsest(class condsst*,class fieldCodes*, class fieldCodes*);
 	void traverse();
 	int trav(){};
+	Value *codegen(){};
 };
 
 class whilest:public fieldCode{
@@ -225,6 +236,7 @@ public:
 	whilest(class condsst*, class fieldCodes*);
 	void traverse();
 	int trav(){};
+	Value *codegen(){};
 };
 
 class forst:public fieldCode{
@@ -235,6 +247,7 @@ public:
 	forst(class forloopinit*, class fieldCodes*);
 	void traverse();
 	int trav(){};
+	Value *codegen(){};
 };
 
 class forloopinit:public fieldCode{
@@ -245,6 +258,7 @@ public:
 	forloopinit(char*,int,int,int);
 	void traverse(){};
 	int trav();
+	Value *codegen(){};
 };
 
 class gotost:public fieldCode{
@@ -257,6 +271,7 @@ public:
 	gotost(class fieldCodes*,string,class callst*);
 	void traverse();
 	int trav(){};
+	Value *codegen(){};
 };
 
 class callst:public fieldCode{
@@ -266,6 +281,7 @@ public:
 	callst(class condsst*);
 	void traverse(){};
 	int trav();
+	Value *codegen(){};
 };
 
 class thingpsst:public fieldCode{
@@ -276,6 +292,7 @@ public:
 	void traverse();
 	int trav(){};
 	void push_back(string);
+	Value *codegen(){};
 };
 
 class thingrsst:public fieldCode{
@@ -286,4 +303,5 @@ public:
 	void traverse(){};
 	int trav(){};
 	void push_back(string);
+	Value *codegen(){};
 };

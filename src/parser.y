@@ -191,5 +191,7 @@ int main(int argc, char *argv[])
   {
 		printf("Successfully parsed without any errors\n");
     start->traverse();
+    start->codegen();
+    start->codeDump();
   }
 }
