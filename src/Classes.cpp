@@ -646,12 +646,14 @@ Value *forst::codegen(){
 Value *whilest::codegen(){
   BasicBlock* body= BasicBlock::Create(getGlobalContext(), "whileloop",F);
   BasicBlock* afterloop=BasicBlock::Create(getGlobalContext(),"afterloop",F);
+  Value *whilecondeval=condition->codegen();
+  Builder.CreateCondBr(whilecondeval,body,afterloop);
 
-  Builder.CreateBr(body);
+
   Builder.SetInsertPoint(body);
 
   block->codegen();
-  Value *whilecondeval=condition->codegen();
+  whilecondeval=condition->codegen();
   Builder.CreateCondBr(whilecondeval,body,afterloop);
 
   Builder.SetInsertPoint(afterloop);
