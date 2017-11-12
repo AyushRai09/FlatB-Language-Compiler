@@ -271,7 +271,7 @@ public:
 	gotost(class fieldCodes*,string,class callst*);
 	void traverse();
 	int trav(){};
-	Value *codegen(){};
+	Value *codegen();
 };
 
 class callst:public fieldCode{
