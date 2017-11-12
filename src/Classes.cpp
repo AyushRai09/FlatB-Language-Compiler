@@ -508,7 +508,7 @@ Value *fieldCodes::codegen(){
 Value *expr::codegen(){
   Value *v= TheModule->getNamedGlobal(lhs);
   Value *rhseval=rhs->codegen();
-  v=Builder.CreateLoad(v);
+  // v=Builder.CreateLoad(v);
   return Builder.CreateStore(rhseval,TheModule->getNamedGlobal(lhs));
 }
 
@@ -609,4 +609,36 @@ Value *condst::codegen(){
   else if(compopr=="==")
     v=Builder.CreateICmpEQ(lhieval,rhieval,"compopromparetmp");
   return v;
+}
+
+Value *forst::codegen(){
+  Value* starteval=ConstantInt::get(getGlobalContext(), APInt(32,init->start));
+  Value* itreval=TheModule->getNamedGlobal(init->iteratorname);
+  Value* finisheval=ConstantInt::get(getGlobalContext(), APInt(32,init->finish));
+  Value* inceval=ConstantInt::get(getGlobalContext(), APInt(32,init->inc));
+
+
+  Builder.CreateStore(starteval,itreval);
+  BasicBlock *upperBB=Builder.GetInsertBlock();
+  BasicBlock* body= BasicBlock::Create(getGlobalContext(), "loop",F);
+  Builder.CreateBr(body);
+
+  Builder.SetInsertPoint(body);
+  PHINode *Variable = Builder.CreatePHI(Type::getInt32Ty(llvm::getGlobalContext()), 2, init->iteratorname);
+  Variable->addIncoming(starteval, upperBB);
+  block->codegen();
+
+
+  Value *curvar=Builder.CreateLoad(itreval);
+  Value *updatedcurvar=Builder.CreateAdd(curvar,inceval,"UpdatedIterator");
+  Builder.CreateStore(updatedcurvar,itreval);
+
+  Value *cond = Builder.CreateICmpULE(updatedcurvar, finisheval, "loopcondition");
+  BasicBlock *endBB = Builder.GetInsertBlock();
+  BasicBlock* afterloop=BasicBlock::Create(getGlobalContext(),"afterloop",F);
+  Builder.CreateCondBr(cond,body,afterloop);
+  Builder.SetInsertPoint(afterloop);
+  Variable->addIncoming(updatedcurvar, endBB);
+
+  return ConstantInt::get(getGlobalContext(), APInt(32,500));
 }

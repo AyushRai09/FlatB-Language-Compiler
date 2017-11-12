@@ -247,7 +247,7 @@ public:
 	forst(class forloopinit*, class fieldCodes*);
 	void traverse();
 	int trav(){};
-	Value *codegen(){};
+	Value *codegen();
 };
 
 class forloopinit:public fieldCode{
