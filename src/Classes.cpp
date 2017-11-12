@@ -552,8 +552,8 @@ Value *arithmeticst::codegen(){
 Value* ifelsest::codegen(){
   Value* condeval=condition->codegen();
   BasicBlock* ifblockeval=BasicBlock::Create(Context,"ifblock",F);
-  BasicBlock* elseblockeval=BasicBlock::Create(Context,"elseblock");
-  BasicBlock* mergeblockeval=BasicBlock::Create(Context,"ifcontinue");
+  BasicBlock* elseblockeval=BasicBlock::Create(Context,"elseblock",F);
+  BasicBlock* mergeblockeval=BasicBlock::Create(Context,"ifcontinue",F);
   Builder.CreateCondBr(condeval,ifblockeval,elseblockeval);
 
   Builder.SetInsertPoint(ifblockeval);
@@ -658,4 +658,22 @@ Value *whilest::codegen(){
 
   Builder.SetInsertPoint(afterloop);
   return ConstantInt::get(getGlobalContext(), APInt(32,500));
+}
+
+Value *gotost::codegen(){
+  BasicBlock* gotoblock=BasicBlock::Create(getGlobalContext(),labelname,F);
+  BasicBlock* endblock=BasicBlock::Create(getGlobalContext(),"aftergoto",F);
+
+  Builder.SetInsertPoint(gotoblock);
+  Value *v;
+  codes->codegen();
+  if(call==NULL)
+    Builder.CreateBr(gotoblock);
+  else if(call!=NULL)
+  {
+    v=call->conds->codegen();
+    Builder.CreateCondBr(v,gotoblock,endblock);
+  }
+  Builder.SetInsertPoint(endblock);
+  return v;
 }
