@@ -4,16 +4,11 @@ declblock{
 codeblock{
     x=3;
     z=4;
-    if x< 100 {
-      x=5;
-      z=5;
-    }
-    else{
-      x=12;
-      z=12;
-    }
-    for i=0,99,1{
-     x=x+1;
-    }
+
+		i=0;
+		while i<4{
+		x=x+2;
+		i=i+1;
+		}
     a=x+z;
 }

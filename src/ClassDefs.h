@@ -236,7 +236,7 @@ public:
 	whilest(class condsst*, class fieldCodes*);
 	void traverse();
 	int trav(){};
-	Value *codegen(){};
+	Value *codegen();
 };
 
 class forst:public fieldCode{
