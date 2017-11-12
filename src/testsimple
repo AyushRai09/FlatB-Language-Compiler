@@ -1,8 +1,7 @@
 declblock{
-	int x, y;
+	int x,arr[10],i;
 }
 codeblock{
-  x=2;
-  y=4;
-  x=x+y;
+	x=5;
+	arr[i]=x+5;
 }

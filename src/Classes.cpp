@@ -22,7 +22,22 @@ map<string,pair<class fieldCodes*,class callst*> >gotomap;
 map<string,vector < int > >arrmap;
 
 FunctionType *FT = llvm::FunctionType::get(Builder.getVoidTy(),false);
-Function *F = llvm::Function::Create(FT, Function::ExternalLinkage, "codeblock", TheModule);
+Function *F = llvm::Function::Create(FT, Function::ExternalLinkage,"main", TheModule);
+bool is_number(const string& s)
+{
+    string::const_iterator it = s.begin();
+    while (it != s.end() && isdigit(*it)) ++it;
+    return !s.empty() && it == s.end();
+}
+
+string giveArrName(string s)
+{
+  int i;
+  string name1="";
+  for(i=0;s[i]!='[';i++)
+    name1+=s[i];
+  return name1;
+}
 // vector< pair< string, pair<class fieldCodes*,class callst*> > > gotovec;
 // vector< pair < pair <string,class fieldCodes*>, class callst* > > gotovec;
 /* Usefull Functions */
@@ -136,11 +151,11 @@ if(declType=="Array")
   name=strtemp;
   for(i=osb+1;name[i]!=']';i++)
     sz+=name[i];
-  // cout << "osb:"<< osb << " " << "sz:" << sz << "\n";
   len1=atoi(sz.c_str());
   for(i=0;i<len1;i++)
     arrmap[strtemp].push_back(0);
-  //cout << strtemp << " " << len1 << "\n";
+  cout << "fdsfds "<< arrmap[name].size() << "\n";
+
 }
 
 this->name = name;
@@ -150,9 +165,6 @@ this->declType = declType;
 
 fieldDecl::fieldDecl(class Vars* vars){
 this->var_list = vars->getVarsList();
-// for(int i = 0; i < var_list.size(); i++){
-//   var_list[i]->setDataType(dataType);
-// }
 }
 fieldDecls::fieldDecls(){
 this->cnt = 0;
@@ -267,11 +279,6 @@ void thingrsst::push_back(string item){
 void Prog::traverse(){
   decls->traverse();
   codes->traverse();
-  //   for (auto it = symbolTable.begin(); it != symbolTable.end(); ++it) {
-  //     // iterator is a pair of (key, value)
-  //     cout << it->first <<"\n"; // key
-  //     cout << it->second << "\n"; // value
-  // }
 }
 
 void fieldDecls::traverse(){
@@ -456,7 +463,7 @@ void thingpsst::traverse(){
     cout << symbolTable[printList[i]] << "\n";
 }
 
-//***************************Codegens***********************************//
+//***************************Codegens*********************************************************//
 Value* Prog::codegen(){
   Value *v;
   v=decls->codegen();
@@ -464,6 +471,7 @@ Value* Prog::codegen(){
   Builder.SetInsertPoint(BB);
 
   v=codes->codegen();
+  Builder.CreateRetVoid();
   return v;
 }
 
@@ -489,8 +497,28 @@ Value* fieldDecl::codegen(){
     ty=Type::getInt32Ty(Context);
     if(var->declType=="Identifier")
     {
+      // cout << "hi"<< var->name << "\n";
+      // PointerType* ptrTy = PointerType::get(ty,0);
+      // GlobalVariable* gv = new GlobalVariable(*TheModule, ptrTy ,false,GlobalValue::ExternalLinkage, 0, var->name);
+      TheModule->getOrInsertGlobal(var->name,Builder.getInt32Ty());
       PointerType* ptrTy = PointerType::get(ty,0);
-      GlobalVariable* gv = new GlobalVariable(*TheModule, ptrTy ,false,GlobalValue::ExternalLinkage, 0, var->name);
+      GlobalVariable* gv = TheModule->getNamedGlobal(var->name);
+      gv->setLinkage(GlobalValue::CommonLinkage);
+      ConstantInt* const_int_val = ConstantInt::get(Context, APInt(32,0));
+      gv->setInitializer(const_int_val);
+    }
+    else if(var->declType == "Array")
+    {
+      // cout << "hi"<< giveArrName(var->name) << "\n";
+      int arrlg=arrmap[var->name].size();
+      // ArrayType* at = ArrayType::get(ty,arrmap[var->name].size());
+      // PointerType* PointerTy = PointerType::get(ArrayType::get(ty,arrmap[var->name].size()),0);
+      // GlobalVariable* gv = new GlobalVariable(*TheModule,at,false,GlobalValue::ExternalLinkage,0,var->name);
+      // gv->setInitializer(ConstantAggregateZero::get(at));
+      ArrayType* arrType= ArrayType::get(ty,arrlg);
+      PointerType* PointerTy_1 = PointerType::get(ArrayType::get(ty,arrlg),0);
+      GlobalVariable* gv = new GlobalVariable(*TheModule,arrType,false,GlobalValue::ExternalLinkage,0,var->name);
+      gv->setInitializer(ConstantAggregateZero::get(arrType));
     }
   }
   Value* v = ConstantInt::get(getGlobalContext(), APInt(32,500));
@@ -506,26 +534,85 @@ Value *fieldCodes::codegen(){
 }
 
 Value *expr::codegen(){
-  Value *v= TheModule->getNamedGlobal(lhs);
+  Value *v;
+  Value *ind;
+  if(lhs.find('[')!=string::npos)
+  {
+    v=TheModule->getNamedGlobal(giveArrName(lhs));
+    int i;
+    string index="";
+    for(i=lhs.find('[')+1;lhs[i]!=']';i++)
+      index+=lhs[i];
+    if(is_number(index)==1)
+    {
+      int pass;
+      stringstream(index) >> pass;
+      ind= ConstantInt::get(getGlobalContext(), APInt(32,pass));
+    }
+    else
+    {
+      // cout << "index: " << index << "\n";
+      ind=TheModule->getNamedGlobal(index);
+      ind=Builder.CreateLoad(ind);
+    }
+    vector<Value*> array_index;
+    array_index.push_back(Builder.getInt32(0));
+    array_index.push_back(ind);
+    v= Builder.CreateGEP(v, array_index, giveArrName(lhs)+"_Index");
+    Value *rhseval=rhs->codegen();
+    return Builder.CreateStore(rhseval,v);
+  }
+
+  v= TheModule->getNamedGlobal(lhs);
   Value *rhseval=rhs->codegen();
   // v=Builder.CreateLoad(v);
   return Builder.CreateStore(rhseval,TheModule->getNamedGlobal(lhs));
 }
 
 Value *exprnewst::codegen(){
-  if(typeExprflag==1)
+  if(typeExprflag==1) //integer
   {
       Value *v= arthm->codegen();
       return v;
   }
 
-  else if(typeExprflag==2)
+  else if(typeExprflag==2) //array or Identifier
   {
-    Value *v=TheModule->getNamedGlobal(str);
+    Value *v;
+    Value *ind;
+    if(str.find('[') != string::npos)
+    {
+      // cout <<"Array Detected" << "\n";
+      // cout << giveArrName(str) << "\n";
+      v=TheModule->getNamedGlobal(giveArrName(str));
+      int i;
+      string index="";
+      for(i=str.find('[')+1;str[i]!=']';i++)
+        index+=str[i];
+      if(is_number(index)==1)
+      {
+        int pass;
+        stringstream(index) >> pass;
+        ind= ConstantInt::get(getGlobalContext(), APInt(32,pass));
+      }
+      else
+      {
+        // cout << "index: " << index << "\n";
+        ind=TheModule->getNamedGlobal(index);
+        ind=Builder.CreateLoad(ind);
+      }
+      vector<Value*> array_index;
+      array_index.push_back(Builder.getInt32(0));
+      array_index.push_back(ind);
+      v= Builder.CreateGEP(v, array_index, giveArrName(str)+"_Index");
+      cout << "fdsafwerert" << "\n";
+      return v;
+    }
+    v=TheModule->getNamedGlobal(str);
     v=Builder.CreateLoad(v);
     return v;
   }
-  else if(typeExprflag==3)
+  else if(typeExprflag==3) //arthm type
   {
     Value* v = ConstantInt::get(getGlobalContext(), APInt(32,num));
     // cout << "dsfdsfa" << num << "\n";
@@ -597,7 +684,7 @@ Value *condst::codegen(){
   Value *v;
   if(compopr==">")
     {
-      cout << "Hi ayush rai" << "\n";
+      // cout << "Hi ayush rai" << "\n";
       v=Builder.CreateICmpUGT(lhieval,rhieval,"gtcomparetmp");
     }
   else if(compopr=="<")
