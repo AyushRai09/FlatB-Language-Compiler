@@ -3,10 +3,14 @@
 @a = common global i32 0
 @b = common global i32 0
 @fac = common global i32 0
+@0 = private unnamed_addr constant [3 x i8] c"%d\00"
+@1 = private unnamed_addr constant [3 x i8] c"%s\00"
+@2 = private unnamed_addr constant [2 x i8] c" \00"
 
 define void @main() {
 entry:
-  store i32 15, i32* @a
+  store i32 6, i32* @a
+  store i32 1, i32* @fac
   br label %L1
 
 L1:                                               ; preds = %L1, %entry
@@ -22,5 +26,10 @@ L1:                                               ; preds = %L1, %entry
   br i1 %gecomparetmp, label %L1, label %aftergoto
 
 aftergoto:                                        ; preds = %L1
+  %4 = load i32, i32* @fac
+  %printfCall = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([3 x i8], [3 x i8]* @0, i32 0, i32 0), i32 %4)
+  %printfCall1 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([3 x i8], [3 x i8]* @1, i32 0, i32 0), i8* getelementptr inbounds ([2 x i8], [2 x i8]* @2, i32 0, i32 0))
   ret void
 }
+
+declare i32 @printf(i8*, ...)

@@ -1,6 +1,0 @@
-declblock{
-	int  i, j, arr[100],temp,next;
-}
-codeblock{
-	arr[i]=2;
-}

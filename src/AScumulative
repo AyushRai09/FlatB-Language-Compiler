@@ -55,3 +55,5 @@ whileloop2:                                       ; preds = %whileloop2, %afterl
 afterloop3:                                       ; preds = %whileloop2, %afterloop
   ret void
 }
+
+declare i32 @printf(i8*, ...)
