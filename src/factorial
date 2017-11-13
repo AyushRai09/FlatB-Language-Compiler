@@ -1,0 +1,12 @@
+declblock{
+	int a,b,fac;
+}
+codeblock{
+
+  a=15;
+  L1:
+    fac=fac*a;
+    a=a-1;
+    goto L1 if a>=1;
+
+}

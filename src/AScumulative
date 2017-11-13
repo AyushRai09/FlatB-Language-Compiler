@@ -1,0 +1,57 @@
+; ModuleID = 'Decaf compiler jit'
+
+@sum = common global i32 0
+@cumsum = common global [100 x i32] zeroinitializer
+@arr = common global [100 x i32] zeroinitializer
+@temp = common global i32 0
+@i = common global i32 0
+@j = common global i32 0
+@prevval = common global i32 0
+
+define void @main() {
+entry:
+  store i32 0, i32* @sum
+  store i32 0, i32* @i
+  %0 = load i32, i32* @i
+  %lecomparetmp = icmp ule i32 %0, 10
+  br i1 %lecomparetmp, label %whileloop, label %afterloop
+
+whileloop:                                        ; preds = %whileloop, %entry
+  %1 = load i32, i32* @i
+  %arr_Index = getelementptr [100 x i32], [100 x i32]* @arr, i32 0, i32 %1
+  %2 = load i32, i32* @i
+  store i32 %2, i32* %arr_Index
+  %3 = load i32, i32* @i
+  %addtmp = add i32 %3, 1
+  store i32 %addtmp, i32* @i
+  %4 = load i32, i32* @i
+  %lecomparetmp1 = icmp ule i32 %4, 10
+  br i1 %lecomparetmp1, label %whileloop, label %afterloop
+
+afterloop:                                        ; preds = %whileloop, %entry
+  %5 = load i32, i32* @i
+  %lecomparetmp4 = icmp ule i32 %5, 10
+  br i1 %lecomparetmp4, label %whileloop2, label %afterloop3
+
+whileloop2:                                       ; preds = %whileloop2, %afterloop
+  %6 = load i32, i32* @i
+  %subtmp = sub i32 %6, 1
+  store i32 %subtmp, i32* @prevval
+  %7 = load i32, i32* @i
+  %cumsum_Index = getelementptr [100 x i32], [100 x i32]* @cumsum, i32 0, i32 %7
+  %8 = load i32, i32* @prevval
+  %arr_Index5 = getelementptr [100 x i32], [100 x i32]* @arr, i32 0, i32 %8
+  %9 = load i32, i32* %arr_Index5
+  %10 = load i32, i32* @i
+  %addtmp6 = add i32 %9, %10
+  store i32 %addtmp6, i32* %cumsum_Index
+  %11 = load i32, i32* @i
+  %addtmp7 = add i32 %11, 1
+  store i32 %addtmp7, i32* @i
+  %12 = load i32, i32* @i
+  %lecomparetmp8 = icmp ule i32 %12, 10
+  br i1 %lecomparetmp8, label %whileloop2, label %afterloop3
+
+afterloop3:                                       ; preds = %whileloop2, %afterloop
+  ret void
+}

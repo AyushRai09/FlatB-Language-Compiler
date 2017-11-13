@@ -517,7 +517,7 @@ Value* fieldDecl::codegen(){
       // gv->setInitializer(ConstantAggregateZero::get(at));
       ArrayType* arrType= ArrayType::get(ty,arrlg);
       PointerType* PointerTy_1 = PointerType::get(ArrayType::get(ty,arrlg),0);
-      GlobalVariable* gv = new GlobalVariable(*TheModule,arrType,false,GlobalValue::ExternalLinkage,0,var->name);
+      GlobalVariable* gv = new GlobalVariable(*TheModule,arrType,false,GlobalValue::CommonLinkage,0,var->name);
       gv->setInitializer(ConstantAggregateZero::get(arrType));
     }
   }
@@ -560,7 +560,11 @@ Value *expr::codegen(){
     array_index.push_back(ind);
     v= Builder.CreateGEP(v, array_index, giveArrName(lhs)+"_Index");
     Value *rhseval=rhs->codegen();
-    return Builder.CreateStore(rhseval,v);
+    Value *nw =Builder.CreateStore(rhseval,v);
+    return nw;
+    // nw= Builder.CreateLoad(nw);
+
+
   }
 
   v= TheModule->getNamedGlobal(lhs);
@@ -605,7 +609,8 @@ Value *exprnewst::codegen(){
       array_index.push_back(Builder.getInt32(0));
       array_index.push_back(ind);
       v= Builder.CreateGEP(v, array_index, giveArrName(str)+"_Index");
-      cout << "fdsafwerert" << "\n";
+      v=Builder.CreateLoad(v);
+      // cout << "fdsafwerert" << "\n";
       return v;
     }
     v=TheModule->getNamedGlobal(str);
@@ -751,6 +756,7 @@ Value *gotost::codegen(){
   BasicBlock* gotoblock=BasicBlock::Create(getGlobalContext(),labelname,F);
   BasicBlock* endblock=BasicBlock::Create(getGlobalContext(),"aftergoto",F);
 
+  Builder.CreateBr(gotoblock);
   Builder.SetInsertPoint(gotoblock);
   Value *v;
   codes->codegen();

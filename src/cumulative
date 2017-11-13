@@ -1,0 +1,19 @@
+declblock{
+	int sum,cumsum[100],arr[100],temp;
+  int i,j,prevval;
+}
+codeblock{
+  sum=0;
+  i=0;
+  while i<=10{
+    arr[i]=i;
+    i=i+1;
+  }
+
+  while i<=10
+  {
+    prevval=i-1;
+    cumsum[i]=arr[prevval]+i;
+    i=i+1;
+  }
+}

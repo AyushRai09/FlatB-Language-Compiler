@@ -1,0 +1,78 @@
+; ModuleID = 'Decaf compiler jit'
+
+@i = common global i32 0
+@j = common global i32 0
+@arr = common global [100 x i32] zeroinitializer
+@temp = common global i32 0
+@next = common global i32 0
+
+define void @main() {
+entry:
+  store i32 3, i32* getelementptr inbounds ([100 x i32], [100 x i32]* @arr, i32 0, i32 0)
+  store i32 2, i32* getelementptr inbounds ([100 x i32], [100 x i32]* @arr, i32 0, i32 1)
+  store i32 5, i32* getelementptr inbounds ([100 x i32], [100 x i32]* @arr, i32 0, i32 2)
+  store i32 7, i32* getelementptr inbounds ([100 x i32], [100 x i32]* @arr, i32 0, i32 3)
+  store i32 1, i32* getelementptr inbounds ([100 x i32], [100 x i32]* @arr, i32 0, i32 4)
+  store i32 0, i32* @i
+  %0 = load i32, i32* @i
+  %ltcomparetmp = icmp ult i32 %0, 5
+  br i1 %ltcomparetmp, label %whileloop, label %afterloop
+
+whileloop:                                        ; preds = %afterloop2, %entry
+  store i32 0, i32* @j
+  %1 = load i32, i32* @j
+  %ltcomparetmp3 = icmp ult i32 %1, 4
+  br i1 %ltcomparetmp3, label %whileloop1, label %afterloop2
+
+afterloop:                                        ; preds = %afterloop2, %entry
+  ret void
+
+whileloop1:                                       ; preds = %ifcontinue11, %whileloop
+  %2 = load i32, i32* @j
+  %addtmp = add i32 %2, 1
+  store i32 %addtmp, i32* @next
+  %3 = load i32, i32* @j
+  %arr_Index = getelementptr [100 x i32], [100 x i32]* @arr, i32 0, i32 %3
+  %4 = load i32, i32* %arr_Index
+  %5 = load i32, i32* @next
+  %arr_Index4 = getelementptr [100 x i32], [100 x i32]* @arr, i32 0, i32 %5
+  %6 = load i32, i32* %arr_Index4
+  %ltcomparetmp5 = icmp ult i32 %4, %6
+  br i1 %ltcomparetmp5, label %ifblock, label %elseblock10
+
+afterloop2:                                       ; preds = %ifcontinue11, %whileloop
+  %7 = load i32, i32* @i
+  %addtmp14 = add i32 %7, 1
+  store i32 %addtmp14, i32* @i
+  %8 = load i32, i32* @i
+  %ltcomparetmp15 = icmp ult i32 %8, 5
+  br i1 %ltcomparetmp15, label %whileloop, label %afterloop
+
+ifblock:                                          ; preds = %whileloop1
+  %9 = load i32, i32* @j
+  %arr_Index6 = getelementptr [100 x i32], [100 x i32]* @arr, i32 0, i32 %9
+  %10 = load i32, i32* %arr_Index6
+  store i32 %10, i32* @temp
+  %11 = load i32, i32* @j
+  %arr_Index7 = getelementptr [100 x i32], [100 x i32]* @arr, i32 0, i32 %11
+  %12 = load i32, i32* @next
+  %arr_Index8 = getelementptr [100 x i32], [100 x i32]* @arr, i32 0, i32 %12
+  %13 = load i32, i32* %arr_Index8
+  store i32 %13, i32* %arr_Index7
+  %14 = load i32, i32* @next
+  %arr_Index9 = getelementptr [100 x i32], [100 x i32]* @arr, i32 0, i32 %14
+  %15 = load i32, i32* @temp
+  store i32 %15, i32* %arr_Index9
+  br label %ifcontinue11
+
+elseblock10:                                      ; preds = %whileloop1
+  br label %ifcontinue11
+
+ifcontinue11:                                     ; preds = %elseblock10, %ifblock
+  %16 = load i32, i32* @j
+  %addtmp12 = add i32 %16, 1
+  store i32 %addtmp12, i32* @j
+  %17 = load i32, i32* @j
+  %ltcomparetmp13 = icmp ult i32 %17, 4
+  br i1 %ltcomparetmp13, label %whileloop1, label %afterloop2
+}
