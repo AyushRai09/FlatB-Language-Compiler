@@ -292,7 +292,7 @@ public:
 	void traverse();
 	int trav(){};
 	void push_back(string);
-	Value *codegen(){};
+	Value *codegen();
 };
 
 class thingrsst:public fieldCode{

@@ -1,5 +1,6 @@
 declblock{
 	int  i, j, arr[100],temp,next;
+	int v1, v2, v3, v4, v5;
 }
 codeblock{
 arr[0]=3;
@@ -26,4 +27,10 @@ i=0;
   i=i+1;
   }
 
+	i=0;
+	while i<5
+	{
+		print arr[i], " ";
+		i=i+1;
+	}
 }

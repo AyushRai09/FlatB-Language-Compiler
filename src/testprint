@@ -1,0 +1,6 @@
+declblock{
+	int x,arr[100];
+}
+codeblock{
+  print "Hello";
+}

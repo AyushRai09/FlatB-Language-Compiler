@@ -3,10 +3,13 @@ declblock{
 }
 codeblock{
 
-  a=15;
+  a=6;
+	fac=1;
   L1:
     fac=fac*a;
     a=a-1;
     goto L1 if a>=1;
+
+		print fac, " ", " ";
 
 }

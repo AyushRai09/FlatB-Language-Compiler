@@ -5,7 +5,7 @@ using namespace std;
 using namespace llvm;
 
 #define TBS printTabs()
-#define outs(x)cout<<#x<<" is "<<x<<endl
+// #define printList(x)cout<<#x<<" is "<<x<<endl
 ofstream out("XML_Vistor.txt");
 int tabs_needed = 0;
 const int tab_width = 4;
@@ -23,6 +23,7 @@ map<string,vector < int > >arrmap;
 
 FunctionType *FT = llvm::FunctionType::get(Builder.getVoidTy(),false);
 Function *F = llvm::Function::Create(FT, Function::ExternalLinkage,"main", TheModule);
+Constant *CalleeF = TheModule->getOrInsertFunction("printf",FunctionType::get(IntegerType::getInt32Ty(Context), PointerType::get(Type::getInt8Ty(Context), 0), true ));
 bool is_number(const string& s)
 {
     string::const_iterator it = s.begin();
@@ -769,4 +770,78 @@ Value *gotost::codegen(){
   }
   Builder.SetInsertPoint(endblock);
   return v;
+}
+
+Value * thingpsst::codegen(){
+  Value* V;
+  Value *v,*ind;
+   for (unsigned int i = 0, e = printList.size(); i != e; ++i){
+     vector<Value *> ArgsV;
+     ArgsV.clear();
+     string tmpstr=printList[i];
+
+    if(tmpstr.find('[')!=string::npos)
+    {
+      v=TheModule->getNamedGlobal(giveArrName(tmpstr));
+      int i;
+      string index="";
+      for(i=tmpstr.find('[')+1;tmpstr[i]!=']';i++)
+        index+=tmpstr[i];
+      if(is_number(index)==1)
+      {
+        int pass;
+        stringstream(index) >> pass;
+        ind= ConstantInt::get(getGlobalContext(), APInt(32,pass));
+      }
+      else
+      {
+        // cout << "index: " << index << "\n";
+        ind=TheModule->getNamedGlobal(index);
+        ind=Builder.CreateLoad(ind);
+      }
+      vector<Value*> array_index;
+      array_index.push_back(Builder.getInt32(0));
+      array_index.push_back(ind);
+      v= Builder.CreateGEP(v, array_index, giveArrName(tmpstr)+"_Index");
+      Value *to_print=Builder.CreateLoad(v);
+      Value* val=Builder.CreateGlobalStringPtr("%d");
+      ArgsV.push_back(val);
+      ArgsV.push_back(to_print);
+    }
+    else if(tmpstr.find("\"")!=string::npos)
+    {
+        Value *to_print;
+         Value* val = Builder.CreateGlobalStringPtr("%s");
+         if(tmpstr.substr(1,tmpstr.length()-2)=="\n")
+         to_print = Builder.CreateGlobalStringPtr("\n");
+         else
+         to_print = Builder.CreateGlobalStringPtr(tmpstr.substr(1,tmpstr.length()-2));
+         ArgsV.push_back(val);
+         ArgsV.push_back(to_print);
+    }
+    else
+    {
+     Value *to_print=Builder.CreateLoad(TheModule->getNamedGlobal(tmpstr));
+     Value* val=Builder.CreateGlobalStringPtr("%d");
+     ArgsV.push_back(val);
+     ArgsV.push_back(to_print);
+    }
+    // }
+  //  else if(printList[i]->type=="strlit"){
+  //    Value* val = Builder.CreateGlobalStringPtr("%s");
+  //    Value* to_print = Builder.CreateGlobalStringPtr(printList[i]->name.substr(1,printList[i]->name.length()-2));
+  //    ArgsV.push_back(val);
+  //    ArgsV.push_back(to_print);
+  //  }
+   V =  Builder.CreateCall(CalleeF, ArgsV, "printfCall");
+   ArgsV.clear();
+   if(i!=e-1){
+     Value* val = Builder.CreateGlobalStringPtr("%s");
+     Value* to_print = Builder.CreateGlobalStringPtr(" ");
+     ArgsV.push_back(val);
+     ArgsV.push_back(to_print);
+     V =  Builder.CreateCall(CalleeF, ArgsV, "printfCall");
+   }
+  return ConstantInt::get(getGlobalContext(), APInt(32,500));
+}
 }
