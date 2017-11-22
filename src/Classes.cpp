@@ -724,6 +724,7 @@ Value *forst::codegen(){
 
   Value *curvar=Builder.CreateLoad(itreval);
   Value *updatedcurvar=Builder.CreateAdd(curvar,inceval,"UpdatedIterator");
+  Builder.CreateStore(updatedcurvar,itreval);
   // Builder.CreateStore(updatedcurvar,itreval);
 
   Value *cond = Builder.CreateICmpULE(updatedcurvar, finisheval, "loopcondition");

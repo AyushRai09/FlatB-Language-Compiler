@@ -1,19 +1,27 @@
 declblock{
 	int sum,cumsum[100],arr[100],temp;
-  int i,j,prevval;
+  int i,j,prevval, index;
 }
 codeblock{
   sum=0;
   i=0;
-  while i<=10{
-    arr[i]=i;
-    i=i+1;
-  }
+	arr[0]=1;
+  for i=0,10,1{
+	index=i-1;
+	arr[i]=2*arr[index]+17;
+	}
 
+i=0;
   while i<=10
   {
     prevval=i-1;
     cumsum[i]=arr[prevval]+i;
     i=i+1;
   }
+
+	i=0;
+	while i<=10{
+	print cumsum[i], " ";
+	i=i+1;
+	}
 }
